@@ -1,0 +1,2 @@
+Se si usano le custom taxonmy si possono impostare come parametro in query_param.json  campo customTaxonomyArray
+Se il campo viene lasciato vuoto vengono comunque cercate anche automaticamente e passate da script iniziale di php
