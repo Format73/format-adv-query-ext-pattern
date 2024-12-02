@@ -1,0 +1,8 @@
+{
+  "Description": "File autogenerato contiene lista parametri che richiedono array in input",
+  "Version": 1,
+  "Doc": "https://developer.wordpress.org/reference/classes/wp_query/",
+  "Autor": "Format",
+  "ParametersBlock": "",
+  "ListaArray": "author__in,author__not_in,cat,category__and,category__in,category__not_in,tag_id,tag__and,tag__in,tag__not_in,tax_query,post_parent__in,post_parent__not_in,post__in,post__not_int,post_name__in,post_type,post_type,"
+}

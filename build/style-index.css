@@ -1,0 +1,18 @@
+/*!***************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/style.scss ***!
+  \***************************************************************************************************************************************************************************************************************************************/
+/*Inserire css usato per visualizzazione */
+.FM-blocks-adv-query-pagination .prev, .FM-blocks-adv-query-pagination .next {
+  position: initial;
+  color: unset;
+}
+
+.FM-blocks-adv-query-pagination .prev:hover, .FM-blocks-adv-query-pagination .next:hover {
+  background-color: unset;
+}
+
+.FM-blocks-adv-query-pagination .current {
+  font-weight: 700;
+}
+
+/*# sourceMappingURL=style-index.css.map*/
