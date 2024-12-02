@@ -1,0 +1,9 @@
+{
+	"view_list": {
+		"Default":"ViewDefault.json",
+		"Esempio Json":"Example_json.json",
+		"Esempio Php":"Example_php.php",
+		"Esempio Json SENZA query":"Example_json_no_query.json",
+		"Esempio PHP SENZA query":"Example_php_no_query.php"
+	}
+}

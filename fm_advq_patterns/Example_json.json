@@ -1,0 +1,102 @@
+{
+    "Template": [
+        { "html-cod": "<div>" },
+		{ "html-cod": "<div>TEst</div>" },
+        { "query-loop": [
+				{  "html-cod": "<div style=\"height:250px;overflow:hidden;\">" },
+				{	"html-cod":"Contatore del loop "},
+				{  "loop-simple-element": "loop_counter" },
+				{  "loop-complex-element": {
+						"type": "permalink",
+						"class": "classe-pippo",
+						"style": "style-pluto",
+						"target":"_blank"
+					}
+				},
+                {  "loop-simple-element": "feature_img" },
+				{  "loop-simple-element": "close_permalink" },
+                {  "html-cod": "</div>"  },
+                {  "html-cod": "<div id=\"post-" },
+				{  "loop-simple-element": "post_id" },
+				{  "html-cod": "\"> div di test per id post </div>"  },
+				{  "loop_group_repeat":
+					{"counter_repeat":[3,7,8],
+					 "group-element":[
+						{  "html-cod": "<div> Ripetizione, sono nel loop" },
+						{  "loop-simple-element": "loop_counter" },
+						{  "html-cod": "</div>"  }
+						]}
+					
+				},
+				{  "html-cod": "<div>" },
+				{  "loop-simple-element": "open_permalink" },
+                {  "loop-simple-element": "title" },
+				{  "loop-simple-element": "close_permalink" },
+                {  "html-cod": "</div>"  },
+				{   "loop_group":
+					{"counter":[[3,5],[7,"all"]],
+					 "group-element":[
+						{  "html-cod": "<div> Data da gruppo" },
+						{  "loop-simple-element": "pub_date" },
+						{  "html-cod": "</div>"  },
+						{  "html-cod": "<div>" },
+						{  "loop-simple-element": "category" },
+						{  "html-cod": "</div>"  }
+						]}
+						
+				},
+				{  "html-cod": "<div>" },
+                {  "loop-simple-element": "tag" },
+                {  "html-cod": "</div>"  },
+				{  "html-cod": "<div>" },
+                {  "loop-simple-element": "author_name" },
+                {  "html-cod": "</div>"  },
+				{  "html-cod": "<div>" },
+                {  "loop-simple-element": "author" },
+                {  "html-cod": "</div>"  },
+				{  "html-cod": "<div>" },
+                {  "loop-simple-element": "excerpt" },
+                {  "html-cod": "</div>"  },
+				{  "html-cod": "<div> Numero commenti" },
+                {  "loop-simple-element": "comments_number" },
+                {  "html-cod": "</div>"  },
+				{  "html-cod": "<div>" },
+                {  "loop-complex-element": {
+						"type": "feature_img",
+						"size": "ffita-lista-small",
+						"attr": {"class" : "alignleft" } 
+					}
+				},
+				{  "loop-complex-element": {
+						"type": "pub_date",
+						"format": "l j F, Y"
+					}
+				},
+				{  "loop-complex-element": {
+						"type": "category",
+						"separator": "&gt;",
+						"parents":"multiple"
+					}
+				},
+				{  "loop-complex-element": {
+						"type": "tag",
+						"before": "Lista tag",
+						"separator": " \/ ",
+						"after":"fine lista"
+					}
+				},
+				{  "html-cod": "<div> Numero commenti avanzato" },
+				{  "loop-complex-element": {
+						"type": "comments_number",
+						"text_no_comments": "nessun commeto al momento",
+						"text_one_comments": "",
+						"text_more_comments": ""
+					}
+				},
+				{  "html-cod": "</div>"  },
+				{  "html-cod": "</div>"  }
+            ]
+        },
+        { "html-cod": "</div>" }
+    ]
+}

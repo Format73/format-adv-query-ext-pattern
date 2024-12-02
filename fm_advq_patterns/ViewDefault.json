@@ -1,0 +1,26 @@
+{
+    "Template": [
+        { "html-cod": "<div>" },
+		{ "html-cod": "<ul>" },
+        { "query-loop": [
+				{  "html-cod": "<li>" },
+				{  "loop-simple-element": "open_permalink" },
+                {  "loop-simple-element": "title" },
+				{  "loop-simple-element": "close_permalink" },
+				{  "loop-simple-element": "excerpt" },
+				{  "html-cod": "</li>" }
+            ]
+        },
+		{ "html-cod": "</ul>" },
+		{ "html-cod": "<div>" },
+		{ "wp-complex-element": {
+			"type": "pagination",
+			"mid_size": 2,
+			"prev_text": "« prev ",
+			"next_text": " » next"
+			}
+		},
+		{ "html-cod": "</div>" },
+        { "html-cod": "</div>" }
+    ]
+}

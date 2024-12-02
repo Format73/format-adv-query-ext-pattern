@@ -1,0 +1,7 @@
+{
+    "Template": [
+        { "html-cod": "<div>" },
+		{ "html-cod": "<div>Template di esempio senza utilizzo della query di wp</div>" },
+        { "html-cod": "</div>" }
+    ]
+}
