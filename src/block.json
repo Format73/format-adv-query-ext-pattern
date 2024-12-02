@@ -1,0 +1,141 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "format-advq-ep/fm-ql-show",
+	"title": "FM: Query Loop View",
+	"version": "0.1.0",
+	"category": "text",
+	"description": "Show Wp query loop with various views",
+	"icon": "location",
+	"attributes": {
+		"TipoQuery":{
+			"type": "string",
+			"default": "custom-query"
+		},
+		"ExtView":{
+			"type": "boolean",
+			"default": false
+		},
+		"Visualizzazione":{
+			"type": "string",
+			"default": ""
+		},
+		"queryTypeAdvanced": {
+			"type": "boolean",
+			"default": false
+		},
+		"queryFreeValue": {
+			"type": "object",
+			"default": {}
+		},
+      "queryFreeCustomTaxonomiesValue": {
+			"type": "object",
+			"default": {}
+		},
+      "queryFreeListCustomTaxonomies": {
+			"type": "object",
+			"default": {}
+		},
+		"postID": {
+			"type": "string",
+			"deafult": null
+		},
+		"categories": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"default": {}
+			}
+		},
+		"selectedAuthor": {
+			"type": "number"
+		},
+		"postsToShow": {
+			"type": "number",
+			"default": 2
+		},
+		"displayPagination": {
+			"type": "boolean",
+			"default": false
+		},
+		"displayPostContent": {
+			"type": "boolean",
+			"default": false
+		},
+		"postContentBgColor": {
+			"type": "string"
+		},
+		"postTitleAlign": {
+			"type": "string",
+			"enum": ["left", "center", "right"]
+		},
+		"postTitleBgColor": {
+			"type": "string"
+		},
+		"postTitleFormat": {
+			"type": "string",
+			"default": "p"
+		},
+		"excerptLength": {
+			"type": "number",
+			"default": 55
+		},
+		"displayAuthor": {
+			"type": "boolean",
+			"default": false
+		},
+		"displayPostDate": {
+			"type": "boolean",
+			"default": false
+		},
+		"postLayout": {
+			"type": "string",
+			"default": "list"
+		},
+		"columns": {
+			"type": "number",
+			"default": 3
+		},
+		"order": {
+			"type": "string",
+			"default": "desc"
+		},
+		"orderBy": {
+			"type": "string",
+			"default": "date"
+		},
+		"displayFeaturedImage": {
+			"type": "boolean",
+			"default": false
+		},
+		"featuredImageBgColor": {
+			"type": "string"
+		},
+		"featuredImageAlign": {
+			"type": "string",
+			"enum": ["left", "center", "right"]
+		},
+		"featuredImageSizeSlug": {
+			"type": "string",
+			"default": "thumbnail"
+		},
+		"feat uredImageSizeWidth": {
+			"type": "number"
+		},
+		"featuredImageSizeHeight": {
+			"type": "number"
+		},
+		"addLinkToFeaturedImage": {
+			"type": "boolean",
+			"default": false
+		}
+	},
+	"supports": {
+		"align": true,
+		"html": false
+	},
+	"textdomain": "format-advq-ep",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css"
+}
