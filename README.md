@@ -1,4 +1,5 @@
 === Format Advanced Query with External pattern ===
+
 VERSIONE BETA
 
 Blocco wordpress per gutenberg, permette di creare una query wp e visualizzare i risultati usando un pattern esterno
@@ -56,7 +57,10 @@ Nota CUSTOM TAXONOMY:
 Se viene attivata l'opzione 'Use advanced version for query', è possibile effettuare una serie di query utilizzando anche le custom tassonomy, opzioni disponibili nella sezione 'Taxonomy Parameters'.
 Se il sito utilizza tassonomie custom, per poterle utilizzare nella query ci sono due opzioni:
 La prima opzione è quella di editare il file query_param.json , in particolare il campo customTaxonomyArray inserendo le tassonomie che si vogliono usare. La sintassi è del tipo:
+```
 "customTaxonomyArray": ["tassonomia1","tassonomia2"], 
+```
+
 Si possono inserire tutte o solo alcune tassonomie, verranno poi mostrate solo quelle inserite manualmente.
 
 La seconda opzione è quella di lasciare il campo customTaxonomyArray vuoto e lasciare che il plugin trovi autonomamente tutte le custom tassonomy utilizzate.
@@ -65,6 +69,7 @@ In questo caso saranno mostrate tutte.
 
 
 == Template esterni per la personalizzazione della visualizzazione ==
+
 Il plugin supporta la possibilità di utilizzare template esterni per visualizzare i risultati.
 I file per i template possono essere file php o file json (vedi dopo per i dettagli)
 
@@ -73,23 +78,28 @@ E' possibile aggiungere template nella cartella fm_advq_patterns del plugin, opp
 Nella cartella 'fm_advq_patterns' DEVE esistere il file _list_patterns.json (anche nella eventuale cartella creata all'interno del proprio tema)
 
 Il file _list_patterns.json contiene la lista dei template che verranno resi disponibili.
-La sintassi è del tipo "descrizione template":"nome_file.estensione" 
 
+La sintassi è del tipo 
+```
+"descrizione template":"nome_file.estensione" 
+```
 
 == Template esterni in PHP ==
+
 Per utilizzare un file php come template esterno è necessario che:
 
 - il file php abbia al suo interno una funzione con lo stesso identico nome del file stesso (senza estensione). Funzione che deve avere una variabile in input che conterrà i risultati della query effettuata dal blocco.
 La funzione DEVE restituire del codice html, NON utilizzare echo o altro!!!
 
 Quindi se un template viene scritto nel file miotemplate.php la funzione all'interno deve essere definita come 
-
+```
 function miotemplate($temp_query){
+
 ... qui si può fare quello che si vuole
   
   return ($codice_html);
 }
- 
+ ```
 
 Nel file php è possibile poi usare qualsiasi comando/funzione di wordpress. Eventualmente si può anche creare una query ad hoc o utilizzare il template per mostrare del semplice testo slegato completamente dalla query. In questi casi nel blocco si può scegliere di non eseguire nessuna query scegliendo l'opzione 'No query' vista precedentemente.
 
@@ -97,10 +107,16 @@ Nel file php è possibile poi usare qualsiasi comando/funzione di wordpress. Eve
 == Template esterni in json == 
 
 I file json devono seguire le seguenti regole di sintassi e possono contenere tutti o parte dei seguenti campi.
----- "Template": []    -> Campo obbligatorio che contiene tutti gli altri campi utilizzati per la visualizzazione del template stesso
---- { "html-cod": "<div>Div di test </div>" },    -> i campi html-cod possono contenere qualsiasi tag html e/o semplice testo. E' un file json, quindi vanno eventualmente utilizzate le \. Il dodice html <div style="height:250px;"> andrà quindi inserito come  <div style=\"height:250px;\"> 
 
----  { "query-loop": [] } -> campo che conterrà al proprio interno tutto ciò che verrà mostrato per ogni elemento della query (equivale al while have post di php)
+
+``` "Template": []  ```   Campo obbligatorio che contiene tutti gli altri campi utilizzati per la visualizzazione del template stesso
+
+
+```  {"html-cod":"<div>Div di test </div>"},  ```  Campi html-cod, che possono contenere qualsiasi tag html e/o semplice testo. E' un file json, quindi vanno eventualmente utilizzate le \. Il dodice html div style="height:250px;" andrà quindi inserito come  <div style=\"height:250px;\"> 
+
+
+``` { "query-loop": [] } ```
+campo che conterrà al proprio interno tutto ciò che verrà mostrato per ogni elemento della query (equivale al while have post di php)
 
 All'interno del query-loop si possono inserire elementi 'semplici' o 'complessi'. Gli elementi semplici utilizzabili sono tutti del tipo
  { "loop-simple-element": "stringa_comando" },
@@ -115,147 +131,166 @@ La stringa_comando deve avere uno dei seguenti valori. Fra parentesi comando wp 
 - author -> genera  link ai post dell'autore (get_the_author_posts_link)
 - excerpt -> mostra il riassunto del post (get_the_excerpt) ATTENZIONE la visualizzazione del riassunto deve essere abilitata nel blocco
 - comments_number -> mostra il numero dei commenti (get_comments_number_text)
-- open_permalink -> Apre il tag html con il link all'articolo ('<a href="'.get_permalink ().'">')
+- open_permalink -> Apre il tag html con il link all'articolo ( ```   '<a href="'.get_permalink ().'">'  ```)
 - close_permalink -> chiude tag html con link all'articolo (</a>)
 - post_id -> id del post
 
 - loop_counter -> non legato a wordpress, mostra semplicemente il numero di iterazioni nel loop.
 
 Una sintassi del tipo 
+```
 { "loop-simple-element": "loop_counter" },
 { "loop-simple-element": "title" },
+```
 mostrerà quindi un numero seguito dal titolo del post.
 Il primo post sarà del tipo 1 titolo_primo_post, il secondo verrà mostrato come 2 titolo_secondo_post etc
 
 
 Nel query-loop è possibile utilizzare anche comandi 'complessi'. La chiave di questi comandi è sempre 'loop-complex-element' e devono obbligatoriamente contenere un elemento del tipo: 'type' = qualcosa
 Oltre all'elemento type possono contenere uno o più altri elementi in base al seguente schema. 
-I campi obbligatori DEVONO contenere quel specifico valore, per quelli facoltativi vedere la funzione e il relativo campo delle funzioni di wp.
-
+Da notare che il campo type e' OBBLIGATORIO e deve corrispondere ad uno dei valori indicati, tutti gli altri valori sono facoltativi e corrispondono ai
+parametri della funzione wp relativa
 
 - Immagine in evidenza: (funzione wp equivalente: get_the_post_thumbnail)
+```
 {  "loop-complex-element": {
-						"type": "feature_img",  - obbligatorio
-						"size": "post-thumbnail",  - facoltativo, equivale a parametro $size della funzione
-						"attr": "attributi"  - facoltativo, equivale a $attr della funzione
-					}
-}					
+	"type": "feature_img", 
+	"size": "post-thumbnail",
+	"attr": "attributi"  
+	}
+}
+```					
 
 - Data di pubblicazione:  (funzione wp equivalente:  get_the_date)
+```
 {  "loop-complex-element": {
-						"type": "pub_date",  - obbligatorio
-						"format": "D M Y"   - facoltativo, equivale a $format della funzione 
-					}
+	"type": "pub_date", 
+	"format": "D M Y"   
+	}
 }		
-
+```
 
 - category: (funzione get_the_category_list)
+ ```
 {  "loop-complex-element": {
-            "type": "category",  - obbligatorio
-						"separator": "",  - facoltativo
-						"parents": ""   - facoltativo
-					}
-}	
+        "type": "category", 
+	"separator": "", 
+	"parents": ""   
+	}
+}
+```
 
 - TAG: (funzione get_the_tag_list) 
-
+```
 {  "loop-complex-element": {
-            "type": "tag",  - obbligatorio
-            "before": "",  - facoltativo
-						"separator": "",  - facoltativo
-						"after": ""   - facoltativo
-					}
+        "type": "tag",  
+        "before": "",  
+	"separator": "", 
+	"after": ""   
+	}
 }	
-
+```
 
 
 - Numero commenti: (get_comments_number_text)
- 
+ ```
 {  "loop-complex-element": {
-            "type": "comments_number",  - obbligatorio
-            "text_no_comments": "",  - facoltativo
-						"text_one_comments": "",  - facoltativo
-						"text_more_comments": ""   - facoltativo
-					}
+ 	"type": "comments_number",  
+ 	"text_no_comments": "",  
+	"text_one_comments": "", 
+	"text_more_comments": "" 
+	}
 }	
-
+```
 
 - Permalink: (get_permalink)
-
+```
  {  "loop-complex-element": {
-            "type": "permalink",  - obbligatorio
-            "class": "",  - facoltativo
-						"style": "",  - facoltativo
-						"target": ""   - facoltativo
-					}
+        "type": "permalink", 
+        "class": "",  
+	"style": "",  
+	"target": ""  
+	}
 }	
-
+```
  
 --- PAGINAZIONE, va naturalmente usato fuori dal loop
 E' possibile inserire anche la paginazione (se abilitata nel blocco). La paginazione può essere inserita con una versione 'semplice' ed una 'complessa'.
 
-{ "wp-simple-element":"pagination"}   -> Mostra paginazione con formato predefinito
+```{ "wp-simple-element":"pagination"} ```   Mostra paginazione con formato predefinito
 
 Il blocco successivo mostra invece la paginazione permettondo di definire alcuni parametri. Vedi paginate_links
+```
 { "wp-complex-element": {
-			"type": "pagination", - obbligatorio 
-			"mid_size": 2,   - facoltativo
-			"prev_text": "« prev ",    -  facoltativo
-			"next_text": " » next"      - facoltativo
-			}
-		},
-
+	"type": "pagination", 
+	"mid_size": 2,   
+	"prev_text": "« prev ",
+	"next_text": " » next" 
+	}
+},
+```
 
 
 --- Altri comandi 'SPECIALI'
+
 Nel template json è possibile definire due ulteriori gruppi di 'comandi', comandi che vanno necessariamente inseriti in un blocco "query-loop". 
 
 --  loop_group: Definisce un gruppo di comandi che verrà applicato agli elementi x del loop. Si veda esempio seguente
-
+```
 {   "loop_group":
-					{"counter":[[3,5],[7,"all"]],
-					 "group-element":[
-						{  "html-cod": "<div> Data di pubblicazione" },
-						{  "loop-simple-element": "pub_date" },
-						{  "html-cod": "</div>"  },
-						{  "html-cod": "<div>" },
-						{  "loop-simple-element": "category" },
-						{  "html-cod": "</div>"  }
-						]}
-						
+	{"counter":[[3,5],[7,"all"]],
+	 "group-element":[
+		{  "html-cod": "<div> Data di pubblicazione" },
+		{  "loop-simple-element": "pub_date" },
+		{  "html-cod": "</div>"  },
+		{  "html-cod": "<div>" },
+		{  "loop-simple-element": "category" },
+		{  "html-cod": "</div>"  }
+	]
+	}
 }, 
+```
 
 Il loop grup richiede un campo "counter" e un campo "group-element".
+
 Il campo counter indica a quali elementi del loop verrà applicata la visualizzazione indicata nel group-element.
-Nell'esempio precedente 
-"counter":[[3,5],[7,"all"]],   -> indica che ai post 3,4,5 e dal 7 in poi (all indica tutti i successivi) verrà applicata una visualizzazione specifica (definita nel campo successivo).
+
+Nell'esempio precedente ```"counter":[[3,5],[7,"all"]],  ``` indica che ai post 3,4,5 e dal 7 in poi (all indica tutti i successivi) verrà applicata una visualizzazione specifica (definita nel campo successivo).
+
 Il parametro counter è un array, a sua volta composto da array (almeno un array) indicanti il numero iniziale e il numero finale dei post a cui si vuole applicare una determinata visualizzazione. 
-Se si vuole utilizzare solo per uno specifico post, ad esempio al 3 il parametro sarà del tipo:  "counter":[ [3,3] ],   
-Se si vuole applicare solo dal 6 post in poi sarà una cosa del tipo "counter":[ [6,"all"] ],   
+
+Se si vuole utilizzare solo per uno specifico post, ad esempio al 3 il parametro sarà del tipo: ``` "counter":[ [3,3] ],  ``` 
+
+Se si vuole applicare solo dal 6 post in poi sarà una cosa del tipo ``` "counter":[ [6,"all"] ],   ```
 
 Il campo group-element  contiene poi la visualizzazione che verrà applicata solo ai post che soddisfano il campo counter. 
 
 -- loop_group_repeat: Applica una specifica visualizzazzione ogni x post.Si veda esempio seguente.
-
+```
 {  "loop_group_repeat":
-					{"counter_repeat":[3,7,8],
-					 "group-element":[
-						{  "html-cod": "<div> Ripetizione, sono nel loop" },
-						{  "loop-simple-element": "loop_counter" },
-						{  "html-cod": "</div>"  }
-						]}
+	{"counter_repeat":[3,7,8],
+	 "group-element":[
+		{  "html-cod": "<div> Ripetizione, sono nel loop" },
+		{  "loop-simple-element": "loop_counter" },
+		{  "html-cod": "</div>"  }
+	]}
 },
+```
 
 loop_group_repeat richiede "counter_repeat" e "group-element".
+
 "counter_repeat": è un array che indica aogni quanti elementi applicare una specifica visualizzazione, definita nel gruppo "group-element".
+
 Nell'esempio sopra quindi la visualizzazione specifica verrà applicata ogni 3 elementi (quindi anche al sesto al nono etc), ogni 7 (14/21) e ogni 8.
-Se si vuole applicare una specifica visualizzazione ogni 4 elementi la sintassi corrispondente è {"counter_repeat":[4],
+
+Se si vuole applicare una specifica visualizzazione ogni 4 elementi la sintassi corrispondente è ```{"counter_repeat":[4],```
+
 Il campo group-element  contiene poi la visualizzazione che verrà applicata solo ai post che soddisfano il campo counter. 
 
 
 
-
 == Sviluppo ==
+
 Nella cartella src si trovano i sorgenti del blocco. 
 Per utilizzarli va usato npm (npm start, install etc...)
 
