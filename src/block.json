@@ -1,6 +1,6 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 2,
+	"apiVersion": 3,
 	"name": "format-advq-ep/fm-ql-show",
 	"title": "FM: Query Loop View",
 	"version": "0.1.0",
@@ -17,6 +17,10 @@
 			"default": false
 		},
 		"Visualizzazione":{
+			"type": "string",
+			"default": ""
+		},
+		"ExtParameters":{
 			"type": "string",
 			"default": ""
 		},

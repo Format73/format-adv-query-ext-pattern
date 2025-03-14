@@ -1,6 +1,161 @@
 /*Inserire css usato per visualizzazione */
 
+/*Generici */
+.fmadvq-flex {
+	display:flex;
+	flex-wrap: wrap;
+	column-gap: 2%;
+}
 
+.fmadvq-flex-end {
+	display:flex;
+	align-items: flex-end;
+}
+
+.fmadvq-col-2, .fmadvq-col-2-big {
+	width: 100%;
+	margin-bottom: 30px;
+}
+
+.fmadvq-clearfix {
+	display: block;
+	overflow: auto;
+}
+
+.fmadvq-clearfix::after {
+	content: "";
+	clear: both;
+	display: table;
+}
+
+.fmadvq-rounded {
+	border-radius: .25rem;			
+}
+
+.fmadvq-container img {
+   max-width: 100%;
+   width: 100%;
+   height: auto;
+   object-fit: cover;
+   overflow: hidden;
+}    
+
+.fmadvq-container  figure {
+	text-align: center;
+}
+
+
+
+.fmadvq-following-post .fmadvq-post-title {
+	margin-top:2px;
+}
+
+.fmadvq-flex-4x-riga{
+	flex: 1 0 97%;
+	margin-bottom: 20px;
+}
+
+.fmadvq-div-relative {
+    position: relative;
+}
+
+.fmadvq-div-absolute{
+	position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.fmadvq-div-shadow {
+	border-radius: 6px;
+	border:none;
+	color: rgba(0, 0, 0, 0.87);
+	background: #fff;
+	-webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+	-moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+
+.fmadvq-text-white-overlay{
+	color:white;
+	text-shadow: 2px 2px 2px #000;
+}
+
+.fmadvq-no-margin{
+	margin:0;
+}
+
+.fmadvq-h3-small {
+	font-size: 18px !important;
+}
+
+.fmadvq-img-h250{
+	max-height:250px;
+}
+
+@media (min-width: 768px) {
+	.fmadvq-col-2{
+		flex: 0 0 50%;
+		max-width: 49%;
+	}
+	.fmadvq-flex-4x-riga{
+		flex: 1 0 46%;
+	}
+	
+	.fmadvq-flex-column-small {
+		display:flex;
+		flex-direction: column;
+		margin-bottom:20px;
+	}
+	
+	.fmadvq-following-post .fmadvq-post-title {
+		font-size:2.1vw !important;
+	}
+
+	
+}	
+
+@media (min-width: 992px) {
+
+	.fmadvq-col-2-big{
+		flex: 0 0 50%;
+		max-width: 49%;
+	}
+
+	.fmadvq-flex-column-small{
+		flex-direction: row;
+	}
+
+	.fmadvq-following-post .fmadvq-post-title {
+		font-size:1.7vw !important;
+	}
+	
+	.fmadvq-flex-4x-riga{
+		flex: 1 0 23%;
+	}
+	.fmadvq-h3-small {
+		font-size:1.25vw !important;
+	}
+	
+	.fmadvq-img-h250{
+		max-height:100%;
+	}
+	
+	
+	.fmadvq-first-post .fmadvq-post-title {
+		font-size:2.1vw !important;
+	}
+	
+}
+
+/* Fine Generici */
+
+
+
+
+
+/*Rivedere paginazione*/
 .FM-blocks-adv-query-pagination .prev, .FM-blocks-adv-query-pagination .next {
     position: initial;
 	color: unset;
@@ -13,3 +168,5 @@
 .FM-blocks-adv-query-pagination .current{
 	font-weight: 700;
 }
+
+/*Fine paginazione*/
