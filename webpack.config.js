@@ -1,8 +1,8 @@
 const defaultConfig = require('@wordpress/scripts/config/webpack.config');
 const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
+
 //aggiungere il nome del file php che contiene la funzione di callback
 const nomeFilePhp = '*.php';
-
 
 //aggiungere il nome del file json aggiuntivo che contiene tutti i parametri per la query
 const nomeFileJson = 'query_param.json';
@@ -51,20 +51,16 @@ module.exports = {
    plugins: [
    ...defaultConfig.plugins,
    
-     new CopyWebpackPlugin( {
-			patterns: [
-				{
-					from: nomeFilePhp,
-					context: 'src',
-					noErrorOnMissing: true,
-				},
-			],
-		} ),
       
       new CopyWebpackPlugin( {
 			patterns: [
 				{
 					from: nomeFileJson,
+					context: 'src',
+					noErrorOnMissing: true,
+				},
+				{
+					from: nomeFilePhp,
 					context: 'src',
 					noErrorOnMissing: true,
 				},

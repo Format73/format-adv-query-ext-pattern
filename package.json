@@ -1,25 +1,27 @@
 {
 	"name": "format-qg-view",
-	"version": "0.2.0",
+	"version": "0.1.0",
 	"description": "Blocco per visualizzazione query loop in vari formati",
-	"author": "Matteo",
+	"author": "ForMat",
 	"license": "GPL-2.0-or-later",
+	"homepage": "frequentflyeritalia.com",
 	"main": "build/index.js",
 	"scripts": {
-		"build": "wp-scripts build",
+		"build": "wp-scripts build --webpack-copy-php",
 		"format": "wp-scripts format",
 		"lint:css": "wp-scripts lint-style",
 		"lint:js": "wp-scripts lint-js",
 		"packages-update": "wp-scripts packages-update",
 		"plugin-zip": "wp-scripts plugin-zip",
-		"start": "wp-scripts start"
+		"start": "wp-scripts start --webpack-copy-php"
 	},
 	"devDependencies": {
-		"@wordpress/scripts": "^27.1.0"
+		"@wordpress/scripts": "^30.6.0"
 	},
 	"dependencies": {
 		"@wordpress/icons": "^9.41.0",
 		"classname": "^0.0.0",
+		"classnames": "^2.5.1",
 		"dompurify": "^3.0.8",
 		"html-react-parser": "^5.1.2"
 	}
