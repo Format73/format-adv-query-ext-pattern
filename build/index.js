@@ -190,6 +190,7 @@ function FormatCustomQueryEdit({
     TipoQuery,
     ExtView,
     Visualizzazione,
+    ExtParameters,
     queryTypeAdvanced,
     queryFreeValue,
     queryFreeCustomTaxonomiesValue,
@@ -281,7 +282,11 @@ function FormatCustomQueryEdit({
   }), {})) !== null && _tagsList$reduce !== void 0 ? _tagsList$reduce : {};
   const categorySuggestions = (_categoriesList$reduc2 = categoriesList?.reduce((accumulator, category) => ({
     ...accumulator,
-    [category.name]: category
+    //[ category.name ]: category,
+    [category.name]: {
+      "id": category.id,
+      "name": category.name
+    }
   }), {})) !== null && _categoriesList$reduc2 !== void 0 ? _categoriesList$reduc2 : {};
   const selectCategories = tokens => {
     const hasNoSuggestion = tokens.some(token => typeof token === 'string' && !categorySuggestions[token]);
@@ -823,6 +828,13 @@ function FormatCustomQueryEdit({
     onChange: value => setAttributes({
       Visualizzazione: value
     })
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.TextControl, {
+    label: "Additional Parameters (optional)",
+    help: "Enter parameters required by external PHP template. Not work with json template",
+    value: ExtParameters,
+    onChange: value => setAttributes({
+      ExtParameters: value
+    })
   })))), TipoQuery != 'no-query' && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.BaseControl, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelBody, {
     title: 'Wp Custom Query parameters'
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.__experimentalNumberControl, {
@@ -915,7 +927,9 @@ function FormatCustomQueryEdit({
     authorList: authorList !== null && authorList !== void 0 ? authorList : [],
     selectedAuthorId: selectedAuthor,
     categorySuggestions: categorySuggestions,
-    onCategoryChange: selectCategories,
+    onCategoryChange: selectCategories
+    //selectedCategories={ categories }
+    ,
     selectedCategories: categories
   })), queryTypeAdvanced && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__.__)('Current query args:')), React.createElement("div", {
     dangerouslySetInnerHTML: {
@@ -1051,21 +1065,14 @@ function FormatCustomQueryEdit({
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./style.scss */ "./src/style.scss");
-/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./edit */ "./src/edit.js");
-/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./block.json */ "./src/block.json");
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./style.scss */ "./src/style.scss");
+/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./edit */ "./src/edit.js");
+/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./block.json */ "./src/block.json");
 /**
  * Registers a new block provided a unique name and an object defining its behavior.
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
  */
-
-
-/**
-* Import per internazionalizzazione
-*/
 
 
 /**
@@ -1079,38 +1086,20 @@ __webpack_require__.r(__webpack_exports__);
 
 /**
  * Internal dependencies
- * import di save non serve per blocchi dinamici
  */
 
-//import save from './save';
 
-/**
- * Import from json
- */
-
-const {
-  name,
-  ...settings
-} = _block_json__WEBPACK_IMPORTED_MODULE_4__;
 
 /**
  * Every block starts by registering a new block type definition.
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
- * 
- * export di save non serve per blocchi dinamici
  */
-(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)(name, {
-  ...settings,
+(0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_3__.name, {
   /**
    * @see ./edit.js
    */
-  edit: _edit__WEBPACK_IMPORTED_MODULE_3__["default"]
-
-  /**
-   * @see ./save.js
-   */
-  // save,
+  edit: _edit__WEBPACK_IMPORTED_MODULE_2__["default"]
 });
 
 /***/ }),
@@ -1366,7 +1355,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":2,"name":"format-advq-ep/fm-ql-show","title":"FM: Query Loop View","version":"0.2.0","category":"text","description":"Show Wp query loop with various views","icon":"location","attributes":{"TipoQuery":{"type":"string","default":"custom-query"},"ExtView":{"type":"boolean","default":false},"Visualizzazione":{"type":"string","default":""},"queryTypeAdvanced":{"type":"boolean","default":false},"queryFreeValue":{"type":"object","default":{}},"queryFreeCustomTaxonomiesValue":{"type":"object","default":{}},"queryFreeListCustomTaxonomies":{"type":"object","default":{}},"postID":{"type":"string","deafult":null},"categories":{"type":"array","items":{"type":"object","default":{}}},"selectedAuthor":{"type":"number"},"postsToShow":{"type":"number","default":2},"displayPagination":{"type":"boolean","default":false},"displayPostContent":{"type":"boolean","default":false},"postContentBgColor":{"type":"string"},"postTitleAlign":{"type":"string","enum":["left","center","right"]},"postTitleBgColor":{"type":"string"},"postTitleFormat":{"type":"string","default":"p"},"excerptLength":{"type":"number","default":55},"displayAuthor":{"type":"boolean","default":false},"displayPostDate":{"type":"boolean","default":false},"postLayout":{"type":"string","default":"list"},"columns":{"type":"number","default":3},"order":{"type":"string","default":"desc"},"orderBy":{"type":"string","default":"date"},"displayFeaturedImage":{"type":"boolean","default":false},"featuredImageBgColor":{"type":"string"},"featuredImageAlign":{"type":"string","enum":["left","center","right"]},"featuredImageSizeSlug":{"type":"string","default":"thumbnail"},"feat uredImageSizeWidth":{"type":"number"},"featuredImageSizeHeight":{"type":"number"},"addLinkToFeaturedImage":{"type":"boolean","default":false}},"supports":{"align":true,"html":false},"textdomain":"format-advq-ep","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"format-advq-ep/fm-ql-show","title":"FM: Query Loop View","version":"0.1.0","category":"text","description":"Show Wp query loop with various views","icon":"location","attributes":{"TipoQuery":{"type":"string","default":"custom-query"},"ExtView":{"type":"boolean","default":false},"Visualizzazione":{"type":"string","default":""},"ExtParameters":{"type":"string","default":""},"queryTypeAdvanced":{"type":"boolean","default":false},"queryFreeValue":{"type":"object","default":{}},"queryFreeCustomTaxonomiesValue":{"type":"object","default":{}},"queryFreeListCustomTaxonomies":{"type":"object","default":{}},"postID":{"type":"string","deafult":null},"categories":{"type":"array","items":{"type":"object","default":{}}},"selectedAuthor":{"type":"number"},"postsToShow":{"type":"number","default":2},"displayPagination":{"type":"boolean","default":false},"displayPostContent":{"type":"boolean","default":false},"postContentBgColor":{"type":"string"},"postTitleAlign":{"type":"string","enum":["left","center","right"]},"postTitleBgColor":{"type":"string"},"postTitleFormat":{"type":"string","default":"p"},"excerptLength":{"type":"number","default":55},"displayAuthor":{"type":"boolean","default":false},"displayPostDate":{"type":"boolean","default":false},"postLayout":{"type":"string","default":"list"},"columns":{"type":"number","default":3},"order":{"type":"string","default":"desc"},"orderBy":{"type":"string","default":"date"},"displayFeaturedImage":{"type":"boolean","default":false},"featuredImageBgColor":{"type":"string"},"featuredImageAlign":{"type":"string","enum":["left","center","right"]},"featuredImageSizeSlug":{"type":"string","default":"thumbnail"},"feat uredImageSizeWidth":{"type":"number"},"featuredImageSizeHeight":{"type":"number"},"addLinkToFeaturedImage":{"type":"boolean","default":false}},"supports":{"align":true,"html":false},"textdomain":"format-advq-ep","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css"}');
 
 /***/ }),
 
@@ -1377,7 +1366,7 @@ module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/tru
 /***/ ((module) => {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"Description":"Parametri per costruire blocco query advanced","Version":1,"Doc":"https://developer.wordpress.org/reference/classes/wp_query/","Autor":"Format","ParametersBlock":{"Author Parameters":{"enabled":true,"querypar":{"author":{"enabled":true,"type":"int","fieldType":"suggestion","fieldOption":"formatAuthorSuggestions","description":"Display posts from one or more authors"},"author__in":{"enabled":true,"type":"array","fieldType":"suggestion","fieldOption":"formatAuthorSuggestions","description":"Display posts from one or more authors"},"author__not_in":{"enabled":true,"type":"array","fieldType":"suggestion","fieldOption":"formatAuthorSuggestions","description":"Exclude posts for one or more author"}}},"Category Parameters":{"enabled":true,"querypar":{"cat":{"enabled":true,"type":"array","fieldType":"suggestion","fieldOption":"formatCategorySuggestions","description":"Display posts that have this category/categories (and any children of that)"},"category__and":{"enabled":false,"type":"array","fieldType":"suggestion","fieldOption":"formatCategorySuggestions","description":"Display posts that are in ALL selected categories"},"category__in":{"enabled":true,"type":"array","fieldType":"suggestion","fieldOption":"formatCategorySuggestions","description":"Display posts that are at least in one of the selected categories (not show posts from any children of these categories)"},"category__not_in":{"enabled":true,"type":"array","fieldType":"suggestion","fieldOption":"formatCategorySuggestions","description":"Exclude multiple categories"}}},"Tag Parameters":{"enabled":true,"querypar":{"tag_id":{"enabled":true,"type":"array","fieldType":"suggestion","fieldOption":"formatTagSuggestions","description":"Display posts that have ONE of this tag/tags"},"tag__and":{"enabled":false,"type":"array","fieldType":"suggestion","fieldOption":"formatTagSuggestions","description":"Display posts that have ALL this tag/tags"},"tag__in":{"enabled":true,"type":"array","fieldType":"suggestion","fieldOption":"formatTagSuggestions","description":"Display posts that have ONE of this tag/tags"},"tag__not_in":{"enabled":true,"type":"array","fieldType":"suggestion","fieldOption":"formatTagSuggestions","description":"Display posts that NOT have any of this tag/tags"}}},"Taxonomy Parameters":{"enabled":true,"customTaxonomyArray":[],"querypar":{"tax_query":{"enabled":true,"type":"array","fieldType":"textField"}},"subQueryPar":{"relation":{"enabled":true,"type":"string","fieldType":"optionField","fieldOption":{"AND":"AND","OR":"OR"},"description":"Relation between taxonomies"}},"singleTaxQueryPar":{"field":{"enabled":true,"field":"string","fieldType":"optionField","fieldOption":{"term_id":"term_id","name":"name","slug":"slug","term_taxonomy_id":"term_taxonomy_id"},"description":"Select taxonomy term by"},"terms":{"enabled":true,"type":"array","fieldType":"textField","description":"Taxonomy term(s)"},"include_children":{"enabled":true,"type":"string","fieldType":"optionField","fieldOption":{"true":"true","false":"false"},"description":"...for hierarchical taxonomies."},"operator":{"enabled":true,"type":"string","fieldType":"optionField","fieldOption":{"IN":"IN","NOT IN":"NOT IN","AND":"AND","EXISTS":"EXISTS","NOT EXISTS":"NOT EXISTS"},"description":"Operator to test"}}},"Search Parameters":{"enabled":true,"querypar":{"s":{"enabled":true,"type":"string","fieldType":"textField","description":"Show Posts based on a keyword search"}}},"Post and Page Parameters":{"enabled":true,"querypar":{"p":{"enabled":true,"type":"int","fieldType":"textField","description":"Display post by ID"},"name":{"enabled":true,"type":"string","fieldType":"textField","description":"Show post/page by slug"},"page_id":{"enabled":true,"type":"int","fieldType":"textField","description":"Display page by ID"},"pagename":{"enabled":true,"type":"string","fieldType":"textField","description":"Display page by slug"},"post_parent":{"enabled":true,"type":"int","fieldType":"textField","description":"Display child pages using parent page ID. Use 0 exclude all child pages"},"post_parent__in":{"enabled":true,"type":"array","fieldType":"textField","description":"Display posts whose parent is in an array"},"post_parent__not_in":{"enabled":true,"type":"array","fieldType":"textField","description":"Display posts whose parent is NOT in an array"},"post__in":{"enabled":true,"type":"array","fieldType":"textField","description":"Display only the specific posts (use post ID)"},"post__not_int":{"enabled":true,"type":"array","fieldType":"textField","description":"Display all posts but NOT the specified ones"},"post_name__in":{"enabled":true,"type":"array","fieldType":"textField","description":"Display only the specific posts (use slug)"}}},"Post Type Parameters":{"enabled":true,"querypar":{"post_type":{"enabled":true,"type":"array","fieldType":"textField","description":"Show posts associated with certain type (post/page/revision ...)"}}},"Status Parameters":{"enabled":true,"querypar":{"post_type":{"enabled":true,"type":"array","fieldType":"textField","description":"Show posts associated with certain post status (publish, pending, raft ...)"}}},"Order & Orderby Parameters":{"enabled":true,"querypar":{"order":{"enabled":true,"type":"string","fieldType":"optionField","fieldOption":{"ASC":"Ascending","DESC":"Descending"},"description":"Order ascending or descending"},"orderby":{"enabled":true,"type":"string","fieldType":"optionField","fieldOption":{"none":"No order","ID":"Order by post id","author":"Order by author","title":"Order by title","name":"Order by post slug","type":"Order by post type","date":"Order by date","modified":"Order by last modified date","parent":"Order by post/page parent id","rand":"Random order","comment_count":"Order by number of comments","relevance":"Order by search terms..","menu_order":"Order by Page Order","post__in":"Preserve post ID order given in the post__in","post_name__in":"Preserve post slug order given in the ‘post_name__in","post_parent__in":"Preserve post parent order given in the ‘post_parent__in"},"description":"Sort retrieved posts by parameter "}}},"Custom Field (post meta) Parameters":{"enabled":true,"querypar":{"meta_key":{"enabled":true,"type":"string","fieldType":"textField"},"meta_value":{"enabled":true,"type":"string","fieldType":"textField"},"meta_value_num":{"enabled":true,"type":"string","fieldType":"textField"},"meta_compare":{"enabled":true,"type":"string","fieldType":"optionField","fieldOption":{"=":"=","!=":"!=",">":">",">=":">=","<":"<","<=":"<=","LIKE":"LIKE","NOT LIKE":"NOT LIKE","IN":"IN","NOT IN":"NOT IN","BETWEEN":"BETWEEN","NOT BETWEEN":"NOT BETWEEN","NOT EXISTS":"NOT EXISTS","REGEXP":"REGEXP","NOT REGEXP":"NOT REGEXP","RLIKE":"RLIKE"},"description":"Sort retrieved posts by parameter "}}}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"Description":"Parametri per costruire blocco query advanced","Version":1,"Doc":"https://developer.wordpress.org/reference/classes/wp_query/","Autor":"Format","ParametersBlock":{"Author Parameters":{"enabled":true,"querypar":{"author":{"enabled":true,"type":"int","fieldType":"suggestion","fieldOption":"formatAuthorSuggestions","description":"Display posts from one or more authors"},"author__in":{"enabled":true,"type":"array","fieldType":"suggestion","fieldOption":"formatAuthorSuggestions","description":"Display posts from one or more authors"},"author__not_in":{"enabled":true,"type":"array","fieldType":"suggestion","fieldOption":"formatAuthorSuggestions","description":"Exclude posts for one or more author"}}},"Category Parameters":{"enabled":true,"querypar":{"cat":{"enabled":true,"type":"array","fieldType":"suggestion","fieldOption":"formatCategorySuggestions","description":"Display posts that have this category/categories (and any children of that)"},"category__and":{"enabled":false,"type":"array","fieldType":"suggestion","fieldOption":"formatCategorySuggestions","description":"Display posts that are in ALL selected categories"},"category__in":{"enabled":true,"type":"array","fieldType":"suggestion","fieldOption":"formatCategorySuggestions","description":"Display posts that are at least in one of the selected categories (not show posts from any children of these categories)"},"category__not_in":{"enabled":true,"type":"array","fieldType":"suggestion","fieldOption":"formatCategorySuggestions","description":"Exclude multiple categories"}}},"Tag Parameters":{"enabled":true,"querypar":{"tag_id":{"enabled":true,"type":"array","fieldType":"suggestion","fieldOption":"formatTagSuggestions","description":"Display posts that have ONE of this tag/tags"},"tag__and":{"enabled":false,"type":"array","fieldType":"suggestion","fieldOption":"formatTagSuggestions","description":"Display posts that have ALL this tag/tags"},"tag__in":{"enabled":true,"type":"array","fieldType":"suggestion","fieldOption":"formatTagSuggestions","description":"Display posts that have ONE of this tag/tags"},"tag__not_in":{"enabled":true,"type":"array","fieldType":"suggestion","fieldOption":"formatTagSuggestions","description":"Display posts that NOT have any of this tag/tags"}}},"Taxonomy Parameters":{"enabled":true,"customTaxonomyArray":[],"querypar":{"tax_query":{"enabled":true,"type":"array","fieldType":"textField"}},"subQueryPar":{"relation":{"enabled":true,"type":"string","fieldType":"optionField","fieldOption":{"AND":"AND","OR":"OR"},"description":"Relation between taxonomies"}},"singleTaxQueryPar":{"field":{"enabled":true,"field":"string","fieldType":"optionField","fieldOption":{"term_id":"term_id","name":"name","slug":"slug","term_taxonomy_id":"term_taxonomy_id"},"description":"Select taxonomy term by"},"terms":{"enabled":true,"type":"array","fieldType":"textField","description":"Taxonomy term(s)"},"include_children":{"enabled":true,"type":"string","fieldType":"optionField","fieldOption":{"true":"true","false":"false"},"description":"...for hierarchical taxonomies."},"operator":{"enabled":true,"type":"string","fieldType":"optionField","fieldOption":{"IN":"IN","NOT IN":"NOT IN","AND":"AND","EXISTS":"EXISTS","NOT EXISTS":"NOT EXISTS"},"description":"Operator to test"}}},"Search Parameters":{"enabled":true,"querypar":{"s":{"enabled":true,"type":"string","fieldType":"textField","description":"Show Posts based on a keyword search"}}},"Post and Page Parameters":{"enabled":true,"querypar":{"p":{"enabled":true,"type":"int","fieldType":"textField","description":"Display post by ID"},"name":{"enabled":true,"type":"string","fieldType":"textField","description":"Show post/page by slug"},"page_id":{"enabled":true,"type":"int","fieldType":"textField","description":"Display page by ID"},"pagename":{"enabled":true,"type":"string","fieldType":"textField","description":"Display page by slug"},"post_parent":{"enabled":true,"type":"int","fieldType":"textField","description":"Display child pages using parent page ID. Use 0 exclude all child pages"},"post_parent__in":{"enabled":true,"type":"array","fieldType":"textField","description":"Display posts whose parent is in an array"},"post_parent__not_in":{"enabled":true,"type":"array","fieldType":"textField","description":"Display posts whose parent is NOT in an array"},"post__in":{"enabled":true,"type":"array","fieldType":"textField","description":"Display only the specific posts (use post ID)"},"post__not_int":{"enabled":true,"type":"array","fieldType":"textField","description":"Display all posts but NOT the specified ones"},"post_name__in":{"enabled":true,"type":"array","fieldType":"textField","description":"Display only the specific posts (use slug)"}}},"Post Type Parameters":{"enabled":true,"querypar":{"post_type":{"enabled":true,"type":"array","fieldType":"textField","description":"Show posts associated with certain type (post/page/revision ...)"}}},"Status Parameters":{"enabled":true,"querypar":{"post_type":{"enabled":true,"type":"array","fieldType":"textField","description":"Show posts associated with certain post status (publish, pending, raft ...)"}}},"Pagination":{"enabled":true,"querypar":{"offset":{"enabled":true,"type":"string","fieldType":"textField","description":"number of post to skip"}}},"Order & Orderby Parameters":{"enabled":true,"querypar":{"order":{"enabled":true,"type":"string","fieldType":"optionField","fieldOption":{"ASC":"Ascending","DESC":"Descending"},"description":"Order ascending or descending"},"orderby":{"enabled":true,"type":"string","fieldType":"optionField","fieldOption":{"none":"No order","ID":"Order by post id","author":"Order by author","title":"Order by title","name":"Order by post slug","type":"Order by post type","date":"Order by date","modified":"Order by last modified date","parent":"Order by post/page parent id","rand":"Random order","comment_count":"Order by number of comments","relevance":"Order by search terms..","menu_order":"Order by Page Order","post__in":"Preserve post ID order given in the post__in","post_name__in":"Preserve post slug order given in the ‘post_name__in","post_parent__in":"Preserve post parent order given in the ‘post_parent__in"},"description":"Sort retrieved posts by parameter "}}},"Custom Field (post meta) Parameters":{"enabled":true,"querypar":{"meta_key":{"enabled":true,"type":"string","fieldType":"textField"},"meta_value":{"enabled":true,"type":"string","fieldType":"textField"},"meta_value_num":{"enabled":true,"type":"string","fieldType":"textField"},"meta_compare":{"enabled":true,"type":"string","fieldType":"optionField","fieldOption":{"=":"=","!=":"!=",">":">",">=":">=","<":"<","<=":"<=","LIKE":"LIKE","NOT LIKE":"NOT LIKE","IN":"IN","NOT IN":"NOT IN","BETWEEN":"BETWEEN","NOT BETWEEN":"NOT BETWEEN","NOT EXISTS":"NOT EXISTS","REGEXP":"REGEXP","NOT REGEXP":"NOT REGEXP","RLIKE":"RLIKE"},"description":"Sort retrieved posts by parameter "}}}}}');
 
 /***/ })
 
@@ -1423,7 +1412,9 @@ module.exports = /*#__PURE__*/JSON.parse('{"Description":"Parametri per costruir
 /******/ 			}
 /******/ 			var notFulfilled = Infinity;
 /******/ 			for (var i = 0; i < deferred.length; i++) {
-/******/ 				var [chunkIds, fn, priority] = deferred[i];
+/******/ 				var chunkIds = deferred[i][0];
+/******/ 				var fn = deferred[i][1];
+/******/ 				var priority = deferred[i][2];
 /******/ 				var fulfilled = true;
 /******/ 				for (var j = 0; j < chunkIds.length; j++) {
 /******/ 					if ((priority & 1 === 0 || notFulfilled >= priority) && Object.keys(__webpack_require__.O).every((key) => (__webpack_require__.O[key](chunkIds[j])))) {
@@ -1509,7 +1500,9 @@ module.exports = /*#__PURE__*/JSON.parse('{"Description":"Parametri per costruir
 /******/ 		
 /******/ 		// install a JSONP callback for chunk loading
 /******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
-/******/ 			var [chunkIds, moreModules, runtime] = data;
+/******/ 			var chunkIds = data[0];
+/******/ 			var moreModules = data[1];
+/******/ 			var runtime = data[2];
 /******/ 			// add "moreModules" to the modules object,
 /******/ 			// then flag all "chunkIds" as loaded and fire callback
 /******/ 			var moduleId, chunkId, i = 0;
@@ -1532,7 +1525,7 @@ module.exports = /*#__PURE__*/JSON.parse('{"Description":"Parametri per costruir
 /******/ 			return __webpack_require__.O(result);
 /******/ 		}
 /******/ 		
-/******/ 		var chunkLoadingGlobal = globalThis["webpackChunkformat_qg_view"] = globalThis["webpackChunkformat_qg_view"] || [];
+/******/ 		var chunkLoadingGlobal = self["webpackChunkformat_qg_view"] = self["webpackChunkformat_qg_view"] || [];
 /******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
 /******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
 /******/ 	})();

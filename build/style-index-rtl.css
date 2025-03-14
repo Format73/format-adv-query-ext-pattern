@@ -64,9 +64,9 @@
 .fmadvq-div-absolute {
   position: absolute;
   top: 0;
-  right: 0;
-  bottom: 0;
   left: 0;
+  bottom: 0;
+  right: 0;
 }
 
 .fmadvq-div-shadow {
@@ -79,7 +79,7 @@
 
 .fmadvq-text-white-overlay {
   color: white;
-  text-shadow: 2px 2px 2px #000;
+  text-shadow: -2px 2px 2px #000;
 }
 
 .fmadvq-no-margin {
@@ -151,5 +151,3 @@
 }
 
 /*Fine paginazione*/
-
-/*# sourceMappingURL=style-index.css.map*/

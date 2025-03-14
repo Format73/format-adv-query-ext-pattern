@@ -1,5 +1,5 @@
 {
-   "Description": "Parametri per costruire blocco query advanced",
+  "Description": "Parametri per costruire blocco query advanced",
 	"Version": 1,
 	"Doc": "https://developer.wordpress.org/reference/classes/wp_query/",
 	"Autor": "Format",
@@ -260,6 +260,17 @@
             }
          }
       },
+	  "Pagination":{
+		 "enabled": true,
+         "querypar": {
+			 "offset":{
+				 "enabled": true,
+				 "type": "string",
+				 "fieldType": "textField",
+               "description": "number of post to skip"
+			 }
+		 }
+	  },
       "Order & Orderby Parameters": {
          "enabled": true,
          "querypar": {

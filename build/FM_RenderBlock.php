@@ -1,7 +1,7 @@
 <?php
 /**
  * File per la definizione della funzione di calldback
- * Version: 1.0.0
+ * Version: 0.1.0
  * Text Domain:       format-advq-ep
   *
  * @package create-format-advq-ep
@@ -52,6 +52,7 @@ class  FM_RenderBlock {
 			$this->parametri_blocco['TipoQuery']='wp-query';
 		}
 		$this->FM_genera_query();
+		
 		//Fine gestione generazione query
 		
 		//Gestione Visualizzazione
@@ -86,7 +87,8 @@ class  FM_RenderBlock {
 		if ($this->reset_riassunto=='YES'){
 			remove_filter( 'excerpt_length', array($this,'FM_filtro_riassunto'), 999 );
 		}		
-	
+		
+  
 	   return($html);
    
 	}
@@ -167,6 +169,8 @@ class  FM_RenderBlock {
 				$array_ParQuery = explode (",", rtrim($array_ParQuery['ListaArray'], ','));
 
 				$lista_parametri_query = $this->parametri_blocco['queryFreeValue'];
+				
+				
 				foreach ($lista_parametri_query as $parametro => $valore){
 					
 					//controllo di avere un valore diverso da nullo
@@ -185,6 +189,9 @@ class  FM_RenderBlock {
 							 $valore = implode (",", $valore);
 						  }
 					   }
+					   
+					   //aggiungo alla query wp 
+					    $arg_query[$parametro] = $valore;
 					}   
 				
 				}
@@ -233,10 +240,11 @@ class  FM_RenderBlock {
 			  else {
 				 return ('Please select parameters');
 			  }
-		
+
 		  $this->query_interna = new \WP_Query( $arg_query );	 
 			 
 		 } //fine gestione query custom
+		 
 		 
 		 //reset della query - forse va messo subito prima dello spintf finale
 		 wp_reset_postdata();
@@ -251,10 +259,11 @@ class  FM_RenderBlock {
 			$this->parametri_blocco['Visualizzazione']= WP_PLUGIN_DIR .'/format-adv-query-ext-pattern/fm_advq_patterns/ViewDefault.json';
 		 }
 		 //verifico se il file esiste
-		 if ( file_exists( $this->parametri_blocco['Visualizzazione']) ){
+		 $local_path=rtrim(ABSPATH,'/');
+		 if ( file_exists( $local_path. $this->parametri_blocco['Visualizzazione']) ){
 			//verifico se devo usare template da file json
 			if ( strtolower(pathinfo($this->parametri_blocco['Visualizzazione'],PATHINFO_EXTENSION ))=='json'){
-				 $strJsonData = file_get_contents ( $this->parametri_blocco['Visualizzazione']);
+				 $strJsonData = file_get_contents ( $local_path.$this->parametri_blocco['Visualizzazione']);
 				//lo converto in un array
 				 $array_JsonTemplate = json_decode($strJsonData, true);
 				 //controllo di avere il json, restituisce null se ci sono stati errori di decodifica
@@ -269,13 +278,19 @@ class  FM_RenderBlock {
 			// o se devo usare template da file php
 			elseif ( strtolower(pathinfo($this->parametri_blocco['Visualizzazione'],PATHINFO_EXTENSION ))=='php'){
 
+				//verifico se ho parametri aggiuntivi passati da plugin
+				$ext_parameters='';
+				
+				if (  (isset($this->parametri_blocco['ExtParameters'])) || ($this->parametri_blocco['ExtParameters']!='')  )	{
+					$ext_parameters=$this->parametri_blocco['ExtParameters'];
+				}
 				//includo il file php esterno 
-				include_once ($this->parametri_blocco['Visualizzazione']);
+				include_once ($local_path.$this->parametri_blocco['Visualizzazione']);
 				
 				//recupero il nome della funzione, deve essere uguale al nome del File
 				$nome_funzione= pathinfo($this->parametri_blocco['Visualizzazione'],PATHINFO_FILENAME);
-				//richiamo la funzione dal php esterno passando la query
-				$html_return = $nome_funzione($this->query_interna);
+				//richiamo la funzione dal php esterno passando la query ed eventuali parametri esterni
+				$html_return = $nome_funzione($this->query_interna,$ext_parameters);
 			}	
 			
 		}
@@ -297,8 +312,8 @@ class  FM_RenderBlock {
 		 
 		 //vedo se devo impostare lunghezza del riassunto... se va visualizzato
 		 if ((isset ($this->parametri_blocco['displayPostContent'])) && ($this->parametri_blocco['displayPostContent'])) {
-			//verifico se devo impostare lunghezza riassunto o se già fatto almeno il controllo
-		    //reset_riassunto diventa si se ho impostato filtro. serve_filtro_riassunto diventa NO se cmq ho fatto i controlli ma la lunghezza è standard
+			//verifico se devo impostare lunghezza riassunto o se  fatto almeno il controllo
+		    //reset_riassunto diventa si se ho impostato filtro. serve_filtro_riassunto diventa NO se cmq ho fatto i controlli ma la lunghezza  standard
 			if ( ($this->reset_riassunto=='NO') && ($this->serve_filtro_riassunto=='FORSE') ){
 				$this->FM_setta_lunghezza_riassunto();
 			}
@@ -339,6 +354,7 @@ class  FM_RenderBlock {
 					  'style' => esc_attr( $image_style ),
 				   )
 				);
+			
 				if ( $this->parametri_blocco['addLinkToFeaturedImage'] ) {
 				   $featured_image = sprintf(
 					  '<a href="%1$s" aria-label="%2$s">%3$s</a>',
@@ -371,7 +387,6 @@ class  FM_RenderBlock {
 				$title_tag_apertura = "<".$this->parametri_blocco['postTitleFormat'].">" ;
 				$title_tag_chiusura = "</".$this->parametri_blocco['postTitleFormat'].">" ;
 			 } 
-			 
 			 
 			 $html .= sprintf(
 				'<div class="%1$s" style="%2$s">%3$s<a class="wp-block-format-blocks-format-custom-query-query__post-title" href="%4$s">%5$s</a>%6$s</div>',
