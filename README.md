@@ -12,6 +12,10 @@ Supporto css esterni per template esterni.
 
 Sistemare css blocco (file editor.scss e style.scss)
 
+Verifica problemi refresh in backend
+
+Verifica problemi caricamento css aggiuntivo su backen
+
 
 == Installazione ==
 
@@ -42,6 +46,9 @@ In particolare:
 - tipo visualizzazione: scegliere template esterno, se abilitato nella opzione precendente
 Se non si utilizza un template esterno per la visualizzazione si possono impostare alcuni parametri usando le altre opzione del blocco. Funzione cmq in fase di sviluppo
 
+
+--- Additional Parameters (optional)
+Parametri addizionali che possono essere passati a script php usati per la visualizzazione
 
 ------ Wp Custom query parameters:
 - Numero di post: numero di post per pagina (se paginazione non abilitata equivale al numero di post totali che verranno mostrati)
