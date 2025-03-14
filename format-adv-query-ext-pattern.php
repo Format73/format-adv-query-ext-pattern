@@ -35,6 +35,7 @@ final class FM_ADVQ_EP {
 		$file_funzione_callback="FM_RenderBlock.php";
 		require_once plugin_dir_path( __FILE__ ) . 'build/' . $file_funzione_callback;
    
+   
 		//registro il blocco   
 		register_block_type(
 			//$this->block_type,
@@ -46,6 +47,10 @@ final class FM_ADVQ_EP {
 	
 		add_action('admin_enqueue_scripts', array($this,'FM_pass_parameters_to_block'));
 		add_action('wp_enqueue_scripts', array($this,'FM_pass_parameters_to_block'));
+		
+		//aggiungo filtro per gestione css dinamica
+		
+		add_filter ('render_block_format-advq-ep/fm-ql-show',  array($this,'FM_load_dynamic_css'),10,2);
 		
 		
 		
@@ -63,7 +68,7 @@ final class FM_ADVQ_EP {
    public function FM_pass_parameters_to_block(){  
    
 		$array_template=$this->FM_recupera_lista_template();
-   		  
+   		 
 		//recupero i nomi delle custom tassonomy e lo passo allo script js
 		$lista_tassonomie=[];
 		$args = array(
@@ -95,6 +100,60 @@ final class FM_ADVQ_EP {
 	  
    }
 
+	//funzione per load dimanico dei css usati da template esterni
+	public function FM_load_dynamic_css ( $block_content, $block ){
+		//recupero nome del template usato
+		if ((isset ($block['attrs']['Visualizzazione'])) && ($block['attrs']['Visualizzazione']!='')){
+			$path_parts = pathinfo($block['attrs']['Visualizzazione']);
+			$nome_file = $path_parts['filename'];
+			
+			$local_path=rtrim(ABSPATH,'/');
+			
+			$dir_file = $local_path.$path_parts['dirname'].'/';
+			$file_css=$nome_file.'.css';
+			$file_min_css=$nome_file.'.min.css';
+			
+			$template_base_dir = 'fm_advq_patterns/';
+			$template_plugin_dir =plugin_dir_path(__FILE__) . $template_base_dir  ;
+			$template_plugin_url = plugins_url( '', __FILE__ ) . '/'. $template_base_dir  ;
+			$template_theme_dir = get_template_directory() .'/'.$template_base_dir ;
+			$template_theme_url = get_template_directory_uri() .'/'.$template_base_dir ;
+			
+			
+			//usato per registrare css
+			$handle_name="fm-dyn-style-".$nome_file;
+			
+			//verifico se template locale o nel tema 
+			if ($dir_file==$template_plugin_dir){
+				$base_url=$template_plugin_url;
+			}
+			elseif ($dir_file==$template_theme_dir){
+				$base_url=$template_theme_url;
+			}
+			else {
+				$base_url='';
+			}
+			
+			//verifico se ho file css o min.css ed eventualmente lo metto in coda
+			if (file_exists($dir_file.$file_min_css)){
+				if ($base_url!=''){
+					wp_enqueue_style( $handle_name, $base_url.$file_min_css );	
+				}
+
+			}
+			elseif (file_exists($dir_file.$file_css)){
+				if ($base_url!=''){
+					wp_enqueue_style( $handle_name, $base_url.$file_css );	
+				}
+
+			}
+			
+		}
+		
+		 return $block_content;
+		
+	}
+	
 	
 
 	//funzione per rimuovere blocco Gutenberg in fase di disattivazione del plugin
@@ -110,17 +169,20 @@ final class FM_ADVQ_EP {
 		$template_base_key = 'view_list';	
 		$template_base_dir = 'fm_advq_patterns/';
 		$template_base_json = '_list_patterns.json';
-		$template_plugin_dir =plugin_dir_path(__FILE__) . $template_base_dir  ;
-		$template_plugin_url = plugins_url( '', __FILE__ ) . '/'. $template_base_dir  ;
-		$template_theme_dir = get_template_directory() .'/'.$template_base_dir ;
-		$template_theme_url = get_template_directory_uri() .'/'.$template_base_dir ;
 		
-
-
+		$local_path=rtrim(ABSPATH,'/');
+		$plugin_relative_path = str_replace($local_path, '', plugin_dir_path(__FILE__));
+		$theme_relative_path=str_replace($local_path, '', get_template_directory());
+		
+		$template_plugin_dir =$plugin_relative_path. $template_base_dir  ;
+		$template_plugin_url = plugins_url( '', __FILE__ ) . '/'. $template_base_dir  ;
+		$template_theme_dir = $theme_relative_path .'/'.$template_base_dir ;
+		$template_theme_url = get_template_directory_uri() .'/'.$template_base_dir ;
+			
 		
 		//controllo se il file esiste nella dir del plugin
-		if ( file_exists( $template_plugin_dir . $template_base_json ) ){
-			 $strJsonData = file_get_contents ( $template_plugin_dir . $template_base_json);
+		if ( file_exists(ABSPATH .$template_plugin_dir . $template_base_json ) ){
+			 $strJsonData = file_get_contents ( ABSPATH .$template_plugin_dir . $template_base_json);
 		  //lo converto in un array
 			 $array_JsonData = json_decode($strJsonData, true);
 			 foreach ($array_JsonData[$template_base_key]	as $key => $value){
@@ -129,12 +191,12 @@ final class FM_ADVQ_EP {
 		}
 		
 		//controllo se il file esiste nella dir del template
-		if ( file_exists( $template_theme_dir . $template_base_json ) ){
-			 $strJsonData = file_get_contents ( $template_theme_dir . $template_base_json);
+		if ( file_exists( ABSPATH .$template_theme_dir . $template_base_json ) ){
+			 $strJsonData = file_get_contents ( ABSPATH .$template_theme_dir . $template_base_json);
 		  //lo converto in un array
 			 $array_JsonData = json_decode($strJsonData, true);
 			 foreach ($array_JsonData[$template_base_key]	as $key => $value){
-				 $list_template_return[$key] = $template_theme_url.$value;
+				 $list_template_return[$key] = $template_theme_dir.$value;
 			 }
 		}
 		
