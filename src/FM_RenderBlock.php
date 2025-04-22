@@ -39,12 +39,9 @@ class  FM_RenderBlock {
 	private $serve_filtro_riassunto='FORSE';
    
    //funzione richiamata come callback da gutenberg
-   //attenzione genera toc solo per header h2 che hanno ancora impostata
 	public function FM_render_block_callback( $block_attributes, $content ) {
 		
 		$this->parametri_blocco=$block_attributes;
-
-		
 		
 		//Gestione generazione query in base a paramentri del blocco 
 		//se paramentro non è settato lo imposto su query di wp
@@ -130,7 +127,6 @@ class  FM_RenderBlock {
 		 if ($this->parametri_blocco['TipoQuery']=='no-query'){
 			 $arg_query['post__in'] = array( 0 );
 			 $this->query_interna = new \WP_Query( $arg_query );
-			 
 		 }
 		 //altrimenti vedo se devo usare query di wp
 		 elseif ($this->parametri_blocco['TipoQuery']=='wp-query'){
@@ -240,7 +236,6 @@ class  FM_RenderBlock {
 			  else {
 				 return ('Please select parameters');
 			  }
-
 		  $this->query_interna = new \WP_Query( $arg_query );	 
 			 
 		 } //fine gestione query custom

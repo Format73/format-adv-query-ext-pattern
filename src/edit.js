@@ -48,6 +48,7 @@ import { useSelect } from '@wordpress/data';
 import { pin, list, grid } from '@wordpress/icons';
 import { store as coreStore } from '@wordpress/core-data';
 
+
 //aggiunta matteo
 import { useState } from '@wordpress/element';
 
@@ -83,7 +84,6 @@ const ListCustomTaxonomies = external_data.lista_tassonomie;
 const ArrayListaTemplate = external_data.array_template;
 
 export default function FormatCustomQueryEdit( { attributes, setAttributes } ) {
-	
 	
 	const ListaVisualizzazioni = Object.keys(ArrayListaTemplate).map(key => ({value: ArrayListaTemplate[key], label: key}));	
     
