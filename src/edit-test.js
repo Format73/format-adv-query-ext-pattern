@@ -745,384 +745,217 @@ const inspectorCreateSingleBlock =(function (parametriQuery){
       });
 
 //vedi da qui
- const inspectorControlsCampi = (
-           <InspectorControls>
-				<PanelBody title={( 'Tipo query' ) }>
-					<BaseControl>
-						<RadioControl
-							label={__('Seleziona tipo di query da usare')}
-							help="Imposta il tipo di query da utilizzare, 'No Query' richiede template esterno"
-							selected={ TipoQuery }
-							options={ [
-									{ label: 'No query', value: 'no-query' },
-									{ label: 'Wordpress query', value: 'wp-query' },
-									{ label: 'Custom query', value: 'custom-query' },
-								] }
-							onChange={ ( option ) => { setAttributes( { TipoQuery: option } ) } }
-						/>
-					</BaseControl>
-			   </PanelBody>  
-			   <PanelBody title={( 'Tipo visualizzzione' ) }>
-					<BaseControl>
-						 <ToggleControl
-							label={ __(  'External Pattern' ) }
-							help={ __( 'Attiva per usare file esterno come pattern di visualizzazione.') }
-							checked={ ExtView }
-							onChange={ ( value ) => 
-								setAttributes( {
-								ExtView:value,
-								})
-							}	
-						/>
-						{ ExtView == true && (
-						<BaseControl>
-							<SelectControl
-								   label="Tipo visualizzazione"
-								   value={ Visualizzazione }
-								   options= {ListaVisualizzazioni }
-								   onChange={ ( value ) =>
-											setAttributes( {
-											   Visualizzazione: value,
-											} )
-										 }
-								 />
-								 
-							<TextControl
-								label='Additional Parameters (optional)'
-								help='Enter parameters required by external PHP template. Not work with json template'
-								value={ ExtParameters }
-								onChange={(value) =>
-									setAttributes ({
-									ExtParameters: value
-									})
-								}
-                     />	 
-								 
-						 </BaseControl>
-						) }		 
-					</BaseControl>  
-				</PanelBody>  
-				{ TipoQuery != 'no-query' && ( 
-					<BaseControl>
-						<PanelBody title={( 'Wp Custom Query parameters' ) }>
-							<NumberControl
-								label='Numero di post'
-								help='Insert numero di post da visualizzare'
-								value={ postsToShow }
-									onChange={(value) =>
-										setAttributes ({
-											postsToShow:  Number.parseInt(value)
-											})
-									   }
-							/>
-							<ToggleControl
-								label={ __( 'Use pagination' ) }
-								help='Non funziona con pattern esterni in php. Con pattern json funziona solo se definito nel pattern'
-								checked={ displayPagination }
-								onChange={ ( value ) =>
-								   setAttributes( {
-									  displayPagination:value,
-								   }) 
-								}   
-							 />
-							 
-							 <ToggleControl
-							 label={  __( 'Mostra Riassunto')  }
-							 help='Non funziona con pattern esterni in php. Con pattern json funziona solo se definito nel pattern'
-							 checked={ displayPostContent }
-							 onChange={ ( value ) =>
-								setAttributes( { displayPostContent: value } )
-							 }
-						  />
-						  
-						  { displayPostContent && (
-						  <BaseControl>
-								<RangeControl
-								   label={ __( 'Max number of words in excerpt' ) }
-								   value={ excerptLength }
-								   onChange={ ( value ) =>
-									  setAttributes( { excerptLength: value } )
-								   }
-								   min={ MIN_EXCERPT_LENGTH }
-								   max={ MAX_EXCERPT_LENGTH }
-								/>
-						  </BaseControl>      
-							 ) }
-							 
-					
-						  { TipoQuery == 'custom-query' && (
-							 <BaseControl>
-							 
-							 
-							 <ToggleControl
-								label={ __( 'Use advanced version for query' ) }
-								checked={ queryTypeAdvanced }
-								onChange={ ( value ) =>
-								   setAttributes( {
-									  queryTypeAdvanced:value,
-								   }) 
-								}   
-							 />
-							 
-							 { queryTypeAdvanced == false && (
-								<BaseControl>
-								   <TextControl
-									  label='Post ID'
-									  help='Insert post ID or posts ID list with comma'
-									  value={ postID }
-									  onChange={(value) =>
-												  setAttributes ({
-													 postID: value
-												  })
-											   }
-								   />
-								   
-								   
-								   
-								   <SelectControl
-									  label="Order"
-									  value={ order }
-									  options={ [
-										 { value: 'ASC', label: 'ascending (A -> Z)' },
-										 { value: 'DESC', label: 'descending (Z -> A)' },
-									  ] }
-									  onChange={ ( value ) =>
-											   setAttributes( {
-												  order: value,
-											   } )
-											}
-									/>
-								   <SelectControl
-									  label="Orderby"
-									  value={ orderBy }
-									  options={ [
-										 { value: 'ID‘', label: 'post ID' },
-										 { value: 'author', label: 'Author' },
-										 { value: 'title', label: 'Post title' },
-										 { value: 'name', label: 'Post name (slug)' },
-										 { value: 'date', label: 'Date' },
-										 { value: 'modified', label: 'Modified date' },
-										 { value: 'rand', label: 'Random' },
-									  ] }
-									  onChange={ ( value ) =>
-											   setAttributes( {
-												  orderBy: value,
-											   } )
-											}
-									  />                         
-									
-										
-								   <QueryControls  
-									  onAuthorChange={ ( value ) =>
-										 setAttributes( {
-											selectedAuthor:
-											'' !== value ? Number( value ) : undefined,
+const InspectorControlsCampi = ({
+    attributes,
+    setAttributes,
+    ListaVisualizzazioni,
+    categorySuggestions,
+    selectCategories,
+    authorList,
+    showFormattedQueryParp,
+    inspectorBlockQuery,
+}) => {
+    const {
+        TipoQuery,
+        ExtView,
+        Visualizzazione,
+        ExtParameters,
+        postsToShow,
+        displayPagination,
+        displayPostContent,
+        excerptLength,
+        queryTypeAdvanced,
+        postID,
+        order,
+        orderBy,
+        selectedAuthor,
+        displayFeaturedImage,
+        featuredImageAlign,
+        addLinkToFeaturedImage,
+        postTitleFormat,
+        postTitleAlign,
+        postTitleBgColor,
+        postContentBgColor,
+        columns,
+        postLayout,
+    } = attributes;
 
-										 } )
-									  }
-									  authorList={ authorList ?? [] }
-									  selectedAuthorId={ selectedAuthor } 
-								   
-									  categorySuggestions={ categorySuggestions }
-									  onCategoryChange={ selectCategories }
-									  //selectedCategories={ categories }
-									  selectedCategories={ categories }
-								   />
-								   
-								</BaseControl> 
-							   ) }
-							 { queryTypeAdvanced  && (
-								<>
-								   
-								   <p>{ __( 'Current query args:' ) }</p>
-								   
+    // Memoized calculations
+    const maxColumns = useMemo(() => Math.min(MAX_POSTS_COLUMNS, 6), []);
 
-								   { React.createElement("div", { dangerouslySetInnerHTML: { __html: showFormattedQueryParp() } }) }
+    // Callback to update attributes
+    const updateAttribute = useCallback((key, value) => {
+        setAttributes({ [key]: value });
+    }, [setAttributes]);
 
-								   <p>{ __( 'Select array args' ) }</p>
-									  
-								   { inspectorBlockQuery() } 
-								</>
-								
-							   ) }
-						   </BaseControl>    
-						  ) }
-					</PanelBody> 
-				   
-				   { ExtView == false  && (
-					   <PanelBody title={ __( 'Featured image settings' ) }>
-						  <ToggleControl
-							 label={ __( 'Display featured image' ) }
-							 checked={ displayFeaturedImage }
-							 onChange={ ( value ) =>
-								setAttributes( { displayFeaturedImage: value } )
-							 }
-						  />
-						  { displayFeaturedImage && (
-							 <>
-								<fieldset>
-								   <label>{  __( 'Image Background color')  }</label> 
-								   <ColorPalette 
-									  onChange={(value) =>
-										 setAttributes ({
-											featuredImageBgColor: value
-										 })
-									  }
-								   />
-								</fieldset>
-							 
-								<ImageSizeControl
-								   onChange={ ( value ) => {
-									  const newAttrs = {};
-									  if ( value.hasOwnProperty( 'width' ) ) {
-										 newAttrs.featuredImageSizeWidth =
-											value.width;
-									  }
-									  if ( value.hasOwnProperty( 'height' ) ) {
-										 newAttrs.featuredImageSizeHeight =
-											value.height;
-									  }
-									  setAttributes( newAttrs );
-								   } }
-								   slug={ featuredImageSizeSlug }
-								   width={ featuredImageSizeWidth }
-								   height={ featuredImageSizeHeight }
-								   imageWidth={ defaultImageWidth }
-								   imageHeight={ defaultImageHeight }
-								   imageSizeOptions={ imageSizeOptions }
-								   onChangeImage={ ( value ) =>
-									  setAttributes( {
-										 featuredImageSizeSlug: value,
-										 featuredImageSizeWidth: undefined,
-										 featuredImageSizeHeight: undefined,
-									  } )
-								   }
-								/>
-								<BaseControl>
-								   <label>
-									  { __( 'Image alignment' ) }
-								   </label>
-								   <BlockAlignmentToolbar
-									  value={ featuredImageAlign }
-									  onChange={ ( value ) =>
-										 setAttributes( {
-											featuredImageAlign: value,
-										 } )
-									  }
-									  controls={ [ 'left', 'center', 'right' ] }
-									  isCollapsed={ false }
-								   />
-								</BaseControl>
-								<ToggleControl
-								   label={ __( 'Add link to featured image' ) }
-								   checked={ addLinkToFeaturedImage }
-								   onChange={ ( value ) =>
-									  setAttributes( {
-										 addLinkToFeaturedImage: value,
-									  } )
-								   }
-								/>
-							 </>
-						  ) }
-					   </PanelBody>
-					)}
-					{ ExtView == false  && (
-					   <PanelBody title={ __( 'Title settings' ) }>
-						  <SelectControl
-									label="Select TAG"
-									value={ postTitleFormat }
-									options={ [
-										{ value: 'H1', label: 'H1' },
-								{ value: 'H2', label: 'H2' },
-								{ value: 'H3', label: 'H3' },
-								{ value: 'H4', label: 'H4' },
-								{ value: 'H5', label: 'H5' },
-								{ value: 'H6', label: 'H6' },
-								{ value: 'p', label: 'p' },
-									] }
-									onChange={ ( value ) =>
-									  setAttributes( {
-										 postTitleFormat: value,
-									  } )
-								   }
-								/>
-						  <BaseControl>
-							 <BaseControl.VisualLabel>
-								{ __( 'Title alignment' ) }
-							 </BaseControl.VisualLabel>
-							 <BlockAlignmentToolbar
-								value={ postTitleAlign }
-								   onChange={ ( value ) =>
-									  setAttributes( {
-										 postTitleAlign: value,
-									  } )
-								   }
-								controls={ [ 'left', 'center', 'right' ] }
-								isCollapsed={ false }
-							 />
-							 <fieldset>
-								<label>{  __( 'Title Background color')  }</label> 
-								<ColorPalette 
-								   onChange={(value) =>
-									  setAttributes ({
-										 postTitleBgColor: value
-									  })
-								   }
-								/>
-							 </fieldset>
-						  </BaseControl>
-					   </PanelBody>
-					   )}
-					{ ExtView == false  && displayPostContent && (
-						  <PanelBody title={ __( 'Post content settings' ) }>
-						  <BaseControl>
-								 <fieldset>
-								   <label>{  __( 'Content Background color')  }</label> 
-								   <ColorPalette 
-									  onChange={(value) =>
-										 setAttributes ({
-											postContentBgColor: value
-										 })
-									  }
-								   />
-								</fieldset>
-						  </BaseControl>      
-						  </PanelBody>
-							 ) }
-					   
-					{ ExtView == false  && (
-					   <PanelBody title={( 'Post Layout Control' ) }>
-						  { postLayout === 'grid' && (
-							 <RangeControl
-								label={ __( 'Columns' ) }
-								value={ columns }
-								onChange={ ( value ) =>
-								   setAttributes( { columns: value } )
-								}
-								min={ 2 }
-								max={
-								   ! hasPosts
-									  ? MAX_POSTS_COLUMNS
-									  : Math.min(
-											MAX_POSTS_COLUMNS,
-											hasPostsMAX
-										)
-								}
-								required
-							 />
-						  ) }
-					   </PanelBody> 
-				   
-						) }	
-				</BaseControl>	
-				)} 
-             </InspectorControls>
-         );
+    return (
+        <InspectorControls>
+            <PanelBody title="Tipo query">
+                <BaseControl>
+                    <RadioControl
+                        label="Seleziona tipo di query da usare"
+                        help="Imposta il tipo di query da utilizzare, 'No Query' richiede template esterno"
+                        selected={TipoQuery}
+                        options={[
+                            { label: 'No query', value: 'no-query' },
+                            { label: 'Wordpress query', value: 'wp-query' },
+                            { label: 'Custom query', value: 'custom-query' },
+                        ]}
+                        onChange={(option) => updateAttribute('TipoQuery', option)}
+                    />
+                </BaseControl>
+            </PanelBody>
+
+            <PanelBody title="Tipo visualizzazione">
+                <BaseControl>
+                    <ToggleControl
+                        label="External Pattern"
+                        help="Attiva per usare file esterno come pattern di visualizzazione."
+                        checked={ExtView}
+                        onChange={(value) => updateAttribute('ExtView', value)}
+                    />
+                    {ExtView && (
+                        <BaseControl>
+                            <SelectControl
+                                label="Tipo visualizzazione"
+                                value={Visualizzazione}
+                                options={ListaVisualizzazioni}
+                                onChange={(value) => updateAttribute('Visualizzazione', value)}
+                            />
+                            <TextControl
+                                label="Additional Parameters (optional)"
+                                help="Enter parameters required by external PHP template. Not work with JSON template"
+                                value={ExtParameters}
+                                onChange={(value) => updateAttribute('ExtParameters', value)}
+                            />
+                        </BaseControl>
+                    )}
+                </BaseControl>
+            </PanelBody>
+
+            {TipoQuery !== 'no-query' && (
+                <PanelBody title="Wp Custom Query parameters">
+                    <NumberControl
+                        label="Numero di post"
+                        help="Insert numero di post da visualizzare"
+                        value={postsToShow}
+                        onChange={(value) => updateAttribute('postsToShow', Number.parseInt(value))}
+                    />
+                    <ToggleControl
+                        label="Use pagination"
+                        checked={displayPagination}
+                        onChange={(value) => updateAttribute('displayPagination', value)}
+                    />
+                    <ToggleControl
+                        label="Mostra Riassunto"
+                        checked={displayPostContent}
+                        onChange={(value) => updateAttribute('displayPostContent', value)}
+                    />
+                    {displayPostContent && (
+                        <BaseControl>
+                            <RangeControl
+                                label="Max number of words in excerpt"
+                                value={excerptLength}
+                                onChange={(value) => updateAttribute('excerptLength', value)}
+                                min={MIN_EXCERPT_LENGTH}
+                                max={MAX_EXCERPT_LENGTH}
+                            />
+                        </BaseControl>
+                    )}
+                    {TipoQuery === 'custom-query' && (
+                        <BaseControl>
+                            <ToggleControl
+                                label="Use advanced version for query"
+                                checked={queryTypeAdvanced}
+                                onChange={(value) => updateAttribute('queryTypeAdvanced', value)}
+                            />
+                            {!queryTypeAdvanced && (
+                                <BaseControl>
+                                    <TextControl
+                                        label="Post ID"
+                                        value={postID}
+                                        onChange={(value) => updateAttribute('postID', value)}
+                                    />
+                                    <SelectControl
+                                        label="Order"
+                                        value={order}
+                                        options={[
+                                            { value: 'ASC', label: 'ascending (A -> Z)' },
+                                            { value: 'DESC', label: 'descending (Z -> A)' },
+                                        ]}
+                                        onChange={(value) => updateAttribute('order', value)}
+                                    />
+                                    <SelectControl
+                                        label="Orderby"
+                                        value={orderBy}
+                                        options={[
+                                            { value: 'ID', label: 'post ID' },
+                                            { value: 'author', label: 'Author' },
+                                            { value: 'title', label: 'Post title' },
+                                            { value: 'name', label: 'Post name (slug)' },
+                                            { value: 'date', label: 'Date' },
+                                            { value: 'modified', label: 'Modified date' },
+                                            { value: 'rand', label: 'Random' },
+                                        ]}
+                                        onChange={(value) => updateAttribute('orderBy', value)}
+                                    />
+                                    <QueryControls
+                                        onAuthorChange={(value) =>
+                                            updateAttribute('selectedAuthor', value || undefined)
+                                        }
+                                        authorList={authorList ?? []}
+                                        selectedAuthorId={selectedAuthor}
+                                        categorySuggestions={categorySuggestions}
+                                        onCategoryChange={selectCategories}
+                                        selectedCategories={attributes.categories}
+                                    />
+                                </BaseControl>
+                            )}
+                            {queryTypeAdvanced && (
+                                <>
+                                    <p>{__('Current query args:')}</p>
+                                    {React.createElement('div', {
+                                        dangerouslySetInnerHTML: { __html: showFormattedQueryParp() },
+                                    })}
+                                    <p>{__('Select array args')}</p>
+                                    {inspectorBlockQuery()}
+                                </>
+                            )}
+                        </BaseControl>
+                    )}
+                </PanelBody>
+            )}
+
+            {ExtView === false && (
+                <PanelBody title="Post Layout Control">
+                    {postLayout === 'grid' && (
+                        <RangeControl
+                            label="Columns"
+                            value={columns}
+                            onChange={(value) => updateAttribute('columns', value)}
+                            min={2}
+                            max={maxColumns}
+                        />
+                    )}
+                </PanelBody>
+            )}
+        </InspectorControls>
+    );
+};
 
          
         return (
             <div { ...blockProps }>
-               { inspectorControlsCampi }
+               <InspectorControlsCampi
+					attributes={attributes}
+					setAttributes={setAttributes}
+					ListaVisualizzazioni={ListaVisualizzazioni}
+					categorySuggestions={categorySuggestions}
+					selectCategories={selectCategories}
+					authorList={authorList}
+					showFormattedQueryParp={showFormattedQueryParp}
+					inspectorBlockQuery={inspectorBlockQuery}
+				/>
                
                <BlockControls>
                   <ToolbarGroup controls={ layoutControls } />
