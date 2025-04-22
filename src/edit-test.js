@@ -48,7 +48,7 @@ import { store as coreStore } from '@wordpress/core-data';
 
 
 //aggiunta matteo
-import { useState, useMemo } from '@wordpress/element';
+import { useState, useMemo, useCallback } from '@wordpress/element';
 
 //importa valori per arg query
 import metadataquery from './query_param.json';
@@ -293,85 +293,59 @@ const layoutControls = useMemo(() => [
       
       //cancella dal blocco queryFreeValue i valori nulli o vuoti
       //viene passato anche il parametro che è appena stato impostato a zero per essere sicuri visto che setAttributes è asincrono
-      const clearQueryFreeValue = (function(nomeParametro){
-         
-          //salvo in un array i dati di queryfreeValue  
-          const arrayValori = Object.entries(queryFreeValue);
-      
-      
-          let nuovoArrayPulito = [];
-          
-          arrayValori.forEach (elemento =>{
-  
-            if ((elemento[0]!=nomeParametro) && (elemento[1]!="")){
-               nuovoArrayPulito.push( [elemento[0] , elemento[1]] );
-            }
-          })
-         
-         //sovrascrivo queryFreeValue con solo i parametri che hanno un valore
-         
-         setAttributes( {
-            queryFreeValue: Object.fromEntries(nuovoArrayPulito)   
-            }) ;
-          
-      
+      const clearQueryFreeValue = useCallback(
+  (nomeParametro) => {
+    // Filtra i valori di queryFreeValue
+    const nuovoArrayPulito = Object.entries(queryFreeValue).reduce((acc, [key, value]) => {
+      if (key !== nomeParametro && value !== "") {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
+
+    // Confronta con il valore attuale prima di aggiornare
+    if (JSON.stringify(queryFreeValue) !== JSON.stringify(nuovoArrayPulito)) {
+      setAttributes({
+        queryFreeValue: nuovoArrayPulito,
       });
+    }
+  },
+  [queryFreeValue, setAttributes]
+);
       
       
-      //funzione per convertire da ID a Nomi
-      const convertiIDinNomi = (function(oggettoSuggerimenti,idElemento){
-         const listaSuggerimentiID =   Object.entries(oggettoSuggerimenti);
-          //verifico se ho una stringa o un array
-         let arrayValIDElemento = [];
-         if ((typeof (idElemento))=== 'string'){
-            arrayValIDElemento = idElemento.split(',');
-         }
-         else {
-            arrayValIDElemento = idElemento;
-         }
-         
-         let returnListaNomi = [];
-         //controllo che array non sia vuoto
-         if (arrayValIDElemento.length){
-            Array.prototype.forEach.call(arrayValIDElemento, singoloValore =>{
-               {listaSuggerimentiID
-                 .filter (sugg => sugg.find(nomeElemento => nomeElemento ==  singoloValore))
-                 .map (sugg => returnListaNomi.push(sugg[0]) ) };
-               });
-         }      
-     
-        return (returnListaNomi);
-       });
+const convertiIDinNomi = (oggettoSuggerimenti, idElemento) => {
+    const arrayID = Array.isArray(idElemento)
+        ? idElemento
+        : [idElemento];
+
+    const idToNomeMap = new Map(
+        Object.entries(oggettoSuggerimenti).map(
+            ([nome, id]) => [id, nome]
+        )
+    );
+
+    const nomi = arrayID
+        .map(id => idToNomeMap.get(Number(id)))
+        .filter(Boolean);
+
+    return nomi;
+};
    
       //funzione per convertire da nomi a ID
-      const convertiNomiinID = (function (oggettoSuggerimenti,nomeElemento,tipoRisultato){
-         const listaSuggerimentiNome =   Object.entries(oggettoSuggerimenti);
- 
-         //verifico se ho una stringa o un array
-         let arrayValNomeElemento = [];
-         if ((typeof (nomeElemento))=== 'string'){
-            arrayValNomeElemento = nomeElemento.split(',');
-         }
-         else {
-            arrayValNomeElemento = nomeElemento;
-         }
-         let returnListaID = [];
-         
-         //controllo che array non sia vuoto
-         if (arrayValNomeElemento.length){
-            Array.prototype.forEach.call(arrayValNomeElemento, singoloValore =>{
-               {listaSuggerimentiNome
-                 .filter (sugg => sugg.find(idElemento => idElemento ==  singoloValore))
-                 .map (sugg => returnListaID.push(sugg[1]) ) };
-                           
-               });
-          } 
-         //controllo se devo restituire un array o una stringa
-         if (tipoRisultato != "array"){
-            returnListaID=returnListaID.toString();
-         }
-         return (returnListaID);
-      });
+const convertiNomiinID = (oggettoSuggerimenti, nomeElemento, tipoRisultato = "array") => {
+	const nomeArray = typeof nomeElemento === 'string'
+		? nomeElemento.split(',').map(str => str.trim())
+		: nomeElemento;
+
+	const nomeToIDMap = oggettoSuggerimenti;
+
+	const ids = nomeArray
+		.map(nome => nomeToIDMap[nome])
+		.filter(id => id !== undefined);
+
+	return tipoRisultato === "array" ? ids : ids.join(',');
+};
       
       
       
