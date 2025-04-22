@@ -408,10 +408,10 @@ const aggiornaQueryCustomTax = useCallback((nomeParametro, valoreParametro) => {
       
 
 
-//controlla  da qui in poi  
+//la conversione ia da errore, vediamo dopo  
     //richiamato da inspectorBlockQuery
     //passa oggetto querypar
-    const inspectorCreateSingleBlock =(function (parametriQuery){
+const inspectorCreateSingleBlock =(function (parametriQuery){
       const listaCampi = Object.keys(parametriQuery);
       
       //let outSubBlocchiTemp={};
@@ -514,7 +514,9 @@ const aggiornaQueryCustomTax = useCallback((nomeParametro, valoreParametro) => {
       })
       return  (outSubBlocchi);    
     })
-   
+
+
+//con IA da errore vediamo dopo  
    //richiamato da inspectorCreateBlockTaxonomy passando il nome della tassonomi.
    //serve per creare i blocchi standard per ogni custom taxonomy   
    //vengono passati i parametri:
@@ -584,6 +586,8 @@ const aggiornaQueryCustomTax = useCallback((nomeParametro, valoreParametro) => {
    
    });
      
+
+//vediamo dopo non testato
      //richiamato da inspectorBlockQuery per creare la query per le custom taxonomy
     //passa array con lista tassonomie
     
@@ -657,7 +661,8 @@ const aggiornaQueryCustomTax = useCallback((nomeParametro, valoreParametro) => {
        return (outBlocchiCT);  
       
     });
-     
+ 
+//vediamo dopo 
      const inspectorBlockQuery = (function (){
          const ListaBlocchiJson = metadataquery.ParametersBlock;
          const ListaBlocchi =  Object.entries(ListaBlocchiJson);
@@ -710,19 +715,31 @@ const aggiornaQueryCustomTax = useCallback((nomeParametro, valoreParametro) => {
           });  
          return (outBlocchi);
       });
-      
+ 
+//vedi da qui 
       const showFormattedQueryParp = (function(){
          const stringQueryPar = JSON.stringify(queryFreeValue,null,'<br>');
          let outputHTML ="";
-         if (stringQueryPar !== undefined){
-            outputHTML = stringQueryPar.replaceAll("}","<br>}");
-            outputHTML = outputHTML.replaceAll ("<br><br>","");
-            outputHTML = outputHTML.replaceAll ("<br>]","]");
-            outputHTML = outputHTML.replaceAll ("[","array (");
-            outputHTML = outputHTML.replaceAll ("]",")");
-            outputHTML = outputHTML.replaceAll (":"," : ");
-            outputHTML += "<p></p>";
-         }   
+            if (stringQueryPar !== undefined) {
+        // Mappa delle sostituzioni
+        const replacements = {
+            "}": "<br>}",
+            "<br><br>": "",
+            "<br>]": "]",
+            "[": "array (",
+            "]": ")",
+            ":": " : ",
+        };
+
+        // Creazione dinamica dell'espressione regolare
+        const regex = new RegExp(Object.keys(replacements).join('|'), 'g');
+
+        // Applicazione delle sostituzioni con un'unica chiamata
+        outputHTML = stringQueryPar.replace(regex, (match) => replacements[match]);
+
+        // Aggiunge il tag finale
+        outputHTML += "<p></p>";
+    }
          
          return (outputHTML);
       });
