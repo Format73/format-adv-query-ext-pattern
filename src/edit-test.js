@@ -349,101 +349,62 @@ const convertiNomiinID = (oggettoSuggerimenti, nomeElemento, tipoRisultato = "ar
       
       
       
-      //funzione per aggiornare le query con custom taxonomy e pulire i rispettivi oggetti
-      const aggiornaQueryCustomTax = (function (nomeParametro, valoreParametro){
-        
-         const arrayPossibiliValori =["field", "terms", "include_children", "operator"];
-         const valoreSeparatore = "---";
-         
-         let arrayQuery = new Map(Object.entries (queryFreeCustomTaxonomiesValue));
-         
-         //controllo se per caso ho disabilitato una tassonomia, in quel caso devo rimuovere tutte le chiavi relative
-         const parametroTemp = nomeParametro.split (valoreSeparatore);
-         if (valoreParametro === false && parametroTemp[1]==="enabled"){
-            //pulisco il valore iniziale
-               arrayQuery.delete (parametroTemp[0]+'---'+parametroTemp[1]);
-            //pulisco tutte le chiavi relative   
-            arrayPossibiliValori.forEach (possibileValore=>{
-               arrayQuery.delete (parametroTemp[0]+'---'+possibileValore);
-            });   
-         }
-         
-         //altrimenti cambio il singolo valore
-         else {
-            arrayQuery.set (nomeParametro, valoreParametro);
-         }
-         
-         //setto oggetto queryFreeCustomTaxonomiesValue con i nuovi parametri
-         setAttributes( {
-            queryFreeCustomTaxonomiesValue: Object.fromEntries(arrayQuery)   
-            }) 
-         
+  
 
-        //variabile per vedere quante tassonomie devo mettere nella query finale..se sono più di una devo mettere anche campo relation, se sono zero non devo mettere nulla
-         let conteggioQuery = 0;
-         
-         //costruisco array finale con tutti i parametri da mettere in queryFreeValue
-         //faccio loop su tutte le tassonomie
-         let arrayTaxFinale = [];
-         queryFreeListCustomTaxonomies.forEach (tassonomia =>{
-            let arrayTaxTemp={};
-            //verifico se la tassonomia è attiva
-            if (arrayQuery.has(tassonomia+'---enabled')){
-               //ho una tassonomia, incremento il contatore
-               conteggioQuery ++;
-               
-               arrayTaxTemp['taxonomy'] = tassonomia; 
-               if (arrayQuery.has(tassonomia+'---field')){
-                  arrayTaxTemp['field'] = arrayQuery.get(tassonomia+'---field'); 
-               }
-               if (arrayQuery.has(tassonomia+'---terms')){               
-                  arrayTaxTemp['terms'] = (arrayQuery.get(tassonomia+'---terms')).split(','); 
-               }
-               if (arrayQuery.has(tassonomia+'---include_children')){               
-                  arrayTaxTemp['include_children'] = arrayQuery.get(tassonomia+'---include_children');
-               }
-               if (arrayQuery.has(tassonomia+'---operator')){               
-                  arrayTaxTemp['operator'] = arrayQuery.get(tassonomia+'---operator');
-               }
-               //costruisco il singolo array temporaneo
-               arrayTaxFinale.push (arrayTaxTemp);   
-            }
-         });
-         
-         
-         let arrayQueryCompleto=[];
-         //verifico se ho trovato qualcosa
-         if (conteggioQuery == 0){
-            //non ho trovato nulla, la query finale è vuota
-            //la cancello se c'è in queryfreeValue
-            if (queryFreeValue.tax_query){
-               delete queryFreeValue.tax_query;
-            }
-         }
-         //se ho un solo elemento costruisco una query "semplice"
-         else {
-            if (conteggioQuery == 1) {
-               arrayQueryCompleto = arrayTaxFinale;
-            }
-         
-         //se ho più di una query devo mettere anche il campo relation
-            else if (conteggioQuery >1 ){
-               let eleTemp={};
-               if (arrayQuery.has('---relation')){
-                  eleTemp['relation'] = arrayQuery.get('---relation');
-               }
-               else {
-                  eleTemp['relation']='AND';
-               }
-               arrayQueryCompleto=[eleTemp,arrayTaxFinale];  
-            }
-         //setto il valore in queryfreeValue   
-            setAttributes({
-               queryFreeValue:{...queryFreeValue, ['tax_query']: arrayQueryCompleto  }
-            }) 
-         }
-         
-      });
+const aggiornaQueryCustomTax = useCallback((nomeParametro, valoreParametro) => {
+  const arrayPossibiliValori = ["field", "terms", "include_children", "operator"];
+  const valoreSeparatore = "---";
+
+  // Converti queryFreeCustomTaxonomiesValue in Map per gestione più efficiente
+  const arrayQuery = new Map(Object.entries(queryFreeCustomTaxonomiesValue));
+
+  // Gestione della disabilitazione della tassonomia
+  const [tassonomia, parametro] = nomeParametro.split(valoreSeparatore);
+  if (valoreParametro === false && parametro === "enabled") {
+    arrayQuery.delete(`${tassonomia}---enabled`);
+    arrayPossibiliValori.forEach((valore) => {
+      arrayQuery.delete(`${tassonomia}---${valore}`);
+    });
+  } else {
+    arrayQuery.set(nomeParametro, valoreParametro);
+  }
+
+  // Costruzione di arrayTaxFinale
+  let conteggioQuery = 0;
+  const arrayTaxFinale = queryFreeListCustomTaxonomies.reduce((acc, tassonomia) => {
+    if (arrayQuery.has(`${tassonomia}---enabled`)) {
+      conteggioQuery++;
+      const taxTemp = {
+        taxonomy: tassonomia,
+        field: arrayQuery.get(`${tassonomia}---field`) || undefined,
+        terms: arrayQuery.get(`${tassonomia}---terms`)?.split(","),
+        include_children: arrayQuery.get(`${tassonomia}---include_children`) || undefined,
+        operator: arrayQuery.get(`${tassonomia}---operator`) || undefined,
+      };
+      acc.push(taxTemp);
+    }
+    return acc;
+  }, []);
+
+  // Costruzione di arrayQueryCompleto
+  let arrayQueryCompleto = [];
+  if (conteggioQuery === 1) {
+    arrayQueryCompleto = arrayTaxFinale;
+  } else if (conteggioQuery > 1) {
+    arrayQueryCompleto = [
+      { relation: arrayQuery.get("---relation") || "AND" },
+      ...arrayTaxFinale,
+    ];
+  }
+
+  // Chiamata unica a setAttributes
+  setAttributes({
+    queryFreeCustomTaxonomiesValue: Object.fromEntries(arrayQuery),
+    queryFreeValue: conteggioQuery > 0
+      ? { ...queryFreeValue, tax_query: arrayQueryCompleto }
+      : { ...queryFreeValue, tax_query: undefined },
+  });
+}, [queryFreeCustomTaxonomiesValue, queryFreeListCustomTaxonomies, queryFreeValue, setAttributes]);
       
    
     //richiamato da inspectorBlockQuery
