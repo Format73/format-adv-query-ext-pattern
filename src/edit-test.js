@@ -716,7 +716,7 @@ const inspectorCreateSingleBlock =(function (parametriQuery){
          return (outBlocchi);
       });
  
-//vedi da qui 
+//ottimizzato in parte
       const showFormattedQueryParp = (function(){
          const stringQueryPar = JSON.stringify(queryFreeValue,null,'<br>');
          let outputHTML ="";
@@ -744,7 +744,8 @@ const inspectorCreateSingleBlock =(function (parametriQuery){
          return (outputHTML);
       });
 
-      const inspectorControls = (
+//vedi da qui
+ const inspectorControlsCampi = (
            <InspectorControls>
 				<PanelBody title={( 'Tipo query' ) }>
 					<BaseControl>
@@ -1121,7 +1122,7 @@ const inspectorCreateSingleBlock =(function (parametriQuery){
          
         return (
             <div { ...blockProps }>
-               { inspectorControls }
+               { inspectorControlsCampi }
                
                <BlockControls>
                   <ToolbarGroup controls={ layoutControls } />
