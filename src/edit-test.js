@@ -81,14 +81,23 @@ const ListCustomTaxonomies = external_data?.lista_tassonomie ?? [];
 //recupero lista dei possibili template passato da script php
 const ArrayListaTemplate = external_data?.array_template ?? {};
 
+// Memorizzare le opzioni di visualizzazione
+const ListaVisualizzazioni = Object.keys(ArrayListaTemplate).map(key => ({
+    value: ArrayListaTemplate[key],
+    label: key,
+}));
+
+//usata per mappare id e name
+const mapToIdName = (list) => {
+    return list?.reduce((acc, item) => ({
+        ...acc,
+        [item.name]: item.id,
+    }), {}) ?? {};
+};
+
 
 export default function FormatCustomQueryEdit( { attributes, setAttributes } ) {
 	
-	// Memorizzare le opzioni di visualizzazione
-	const ListaVisualizzazioni = useMemo(() => Object.keys(ArrayListaTemplate).map(key => ({
-		value: ArrayListaTemplate[key],
-		label: key,
-	})), [ArrayListaTemplate]);
 
     
 	const {
@@ -199,28 +208,15 @@ export default function FormatCustomQueryEdit( { attributes, setAttributes } ) {
 	}, [imageSizes]);
 
 	// 2. Nome -> ID per categorie
-	const formatCategorySuggestions = useMemo(() => {
-		return categoriesList?.reduce((accumulator, category) => ({
-			...accumulator,
-			[category.name]: category.id,
-		}), {}) ?? {};
-	}, [categoriesList]);
+	const formatCategorySuggestions = useMemo(() => mapToIdName(categoriesList), [categoriesList]);
+    
 
 	// 3. Nome -> ID per autori
-	const formatAuthorSuggestions = useMemo(() => {
-		return authorList?.reduce((accumulator, author) => ({
-			...accumulator,
-			[author.name]: author.id,
-		}), {}) ?? {};
-	}, [authorList]);
+	const formatAuthorSuggestions = useMemo(() => mapToIdName(authorList), [authorList]);
+   
 
 	// 4. Nome -> ID per tag
-	const formatTagSuggestions = useMemo(() => {
-		return tagsList?.reduce((accumulator, tag) => ({
-			...accumulator,
-			[ tag.name ]: tag.id,
-		}), {}) ?? {};
-	}, [tagsList]);
+	 const formatTagSuggestions = useMemo(() => mapToIdName(tagsList), [tagsList]);
 
 	// 5. Suggerimenti completi categoria (oggetto con id e name)
 	const categorySuggestions = useMemo(() => {
