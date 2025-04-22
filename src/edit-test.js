@@ -406,7 +406,9 @@ const aggiornaQueryCustomTax = useCallback((nomeParametro, valoreParametro) => {
   });
 }, [queryFreeCustomTaxonomiesValue, queryFreeListCustomTaxonomies, queryFreeValue, setAttributes]);
       
-   
+
+
+//controlla  da qui in poi  
     //richiamato da inspectorBlockQuery
     //passa oggetto querypar
     const inspectorCreateSingleBlock =(function (parametriQuery){
