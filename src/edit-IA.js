@@ -477,6 +477,7 @@ const inspectorCreateSingleBlock = useCallback((parametriQuery) => {
         const valElemento = queryFreeCustomTaxonomiesValue[`${tassonomia}---${campo}`] || '';
 
         if (parametriSingleQuery[campo].fieldType === "optionField") {
+			//non modificare con IA... scompaiono vari campi
             const optionValue = Object.keys(parametriSingleQuery[campo].fieldOption).map((key) => ({
                 value: key,
                 label: parametriSingleQuery[campo].fieldOption[key],
