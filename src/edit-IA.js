@@ -2,6 +2,11 @@
  * aggiunte matteo
  */
 
+//funzione debug
+import { generaIdUnivoco,logRerender } from './funzioni-debug'; 
+import { useEffect,useRef  } from '@wordpress/element';
+//fine import funzioni debug
+
 import  ServerSideRender  from '@wordpress/server-side-render';
 import './editor.scss';
 
@@ -97,8 +102,25 @@ const mapToIdName = (list) => {
 
 
 export default function FormatCustomQueryEdit( { attributes, setAttributes } ) {
-	
 
+	//blocco per debug
+	// Salva il tempo di inizio
+    const startTime = performance.now();
+    // Genera un ID univoco e calcola il tempo di esecuzione
+    const uniqueId = useMemo(() => generaIdUnivoco(startTime), []);
+	
+	 // Memorizza i valori precedenti
+    const prevAttributesRef = useRef(attributes);
+
+    // Logga un messaggio ogni volta che il componente fa un rerender
+    useEffect(() => {
+        logRerender('FormatCustomQueryEdit', uniqueId, prevAttributesRef.current, attributes);
+        // Aggiorna i valori precedenti
+        prevAttributesRef.current = attributes;
+    }, [attributes]); // Esegui solo quando attributes cambia
+
+	
+	//fine blocco debug
     
 	const {
 	  TipoQuery,
