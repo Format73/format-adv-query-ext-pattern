@@ -24,13 +24,6 @@ final class FM_ADVQ_EP {
  
    public function  __construct() {
    
-      if ( ! function_exists( 'register_block_type' ) ) {
-
-			// Gutenberg is not active.
-			return;
-		}
-      
-      
       
 		$file_funzione_callback="FM_RenderBlock.php";
 		require_once plugin_dir_path( __FILE__ ) . 'build/' . $file_funzione_callback;
@@ -121,47 +114,48 @@ final class FM_ADVQ_EP {
 		
 	}
 	
+	
+	// Funzione helper per leggere file JSON
+	private function read_json_file($base_dir, $file_name, $key) {
+		$full_path = ABSPATH . $base_dir . $file_name;
+		
+		if (file_exists($full_path)) {
+			$json_data = file_get_contents($full_path);
+			$array_data = json_decode($json_data, true);
+			if (isset($array_data[$key])) {
+				return $array_data[$key];
+			}
+		}
+		return [];
+	}
+	
+	
+	
 	//legge i file json e 
 	//restituisce un array con la lista dei template 
-	private function FM_recupera_lista_template(){
-		$list_template_return=[];
-		$template_base_key = 'view_list';	
+	private function FM_recupera_lista_template() {
+		$list_template_return = [];
+		$template_base_key = 'view_list';    
 		$template_base_dir = 'fm_advq_patterns/';
 		$template_base_json = '_list_patterns.json';
 		
-		$local_path=rtrim(ABSPATH,'/');
-		$plugin_relative_path = str_replace($local_path, '', plugin_dir_path(__FILE__));
-		$theme_relative_path=str_replace($local_path, '', get_template_directory());
-		
-		$template_plugin_dir =$plugin_relative_path. $template_base_dir  ;
-		$template_plugin_url = plugins_url( '', __FILE__ ) . '/'. $template_base_dir  ;
-		$template_theme_dir = $theme_relative_path .'/'.$template_base_dir ;
-		$template_theme_url = get_template_directory_uri() .'/'.$template_base_dir ;
-			
-		
-		//controllo se il file esiste nella dir del plugin
-		if ( file_exists(ABSPATH .$template_plugin_dir . $template_base_json ) ){
-			 $strJsonData = file_get_contents ( ABSPATH .$template_plugin_dir . $template_base_json);
-		  //lo converto in un array
-			 $array_JsonData = json_decode($strJsonData, true);
-			 foreach ($array_JsonData[$template_base_key]	as $key => $value){
-				 $list_template_return[$key] = $template_plugin_dir.$value;
-			 }
+		// Percorsi relativi del plugin e del tema
+		$plugin_dir = str_replace(rtrim(ABSPATH, '/'), '', plugin_dir_path(__FILE__)) . $template_base_dir;
+		$theme_dir = str_replace(rtrim(ABSPATH, '/'), '', get_template_directory()) . '/' . $template_base_dir;
+
+		// Leggo il JSON dalla directory del plugin
+		$plugin_templates = $this->read_json_file($plugin_dir, $template_base_json, $template_base_key);
+		foreach ($plugin_templates as $key => $value) {
+			$list_template_return[$key] = $plugin_dir . $value;
 		}
-		
-		//controllo se il file esiste nella dir del template
-		if ( file_exists( ABSPATH .$template_theme_dir . $template_base_json ) ){
-			 $strJsonData = file_get_contents ( ABSPATH .$template_theme_dir . $template_base_json);
-		  //lo converto in un array
-			 $array_JsonData = json_decode($strJsonData, true);
-			 foreach ($array_JsonData[$template_base_key]	as $key => $value){
-				 $list_template_return[$key] = $template_theme_dir.$value;
-			 }
+
+		// Leggo il JSON dalla directory del tema
+		$theme_templates = $this->read_json_file($theme_dir, $template_base_json, $template_base_key);
+		foreach ($theme_templates as $key => $value) {
+			$list_template_return[$key] = $theme_dir . $value;
 		}
-		
-		return ($list_template_return);
-        		
-		
+
+		return $list_template_return;
 	}
 	
 	//funzione per caricare css dinamico in backend
@@ -256,8 +250,10 @@ final class FM_ADVQ_EP {
 
 
 // Start it.
-
-add_action( 'init',__NAMESPACE__ .'\fm_start_button' );
+// Controlla se Gutenberg è attivo prima di inizializzare il plugin
+if (function_exists('register_block_type')) {
+    add_action('init', __NAMESPACE__ . '\fm_start_button');
+}
 
 
 function fm_start_button() {
