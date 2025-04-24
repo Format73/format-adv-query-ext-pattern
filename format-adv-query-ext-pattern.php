@@ -118,10 +118,14 @@ final class FM_ADVQ_EP {
 	// Funzione helper per leggere file JSON
 	private function read_json_file($base_dir, $file_name, $key) {
 		$full_path = ABSPATH . $base_dir . $file_name;
-		
+
 		if (file_exists($full_path)) {
 			$json_data = file_get_contents($full_path);
 			$array_data = json_decode($json_data, true);
+			if (json_last_error() !== JSON_ERROR_NONE) {
+				error_log('Errore nel parsing del file JSON: ' . $full_path);
+				return [];
+			}
 			if (isset($array_data[$key])) {
 				return $array_data[$key];
 			}
@@ -192,7 +196,7 @@ final class FM_ADVQ_EP {
 	//funzione per risolvere path css ed eventualmente includerlo, richiamata sia per frontend che backend
 
 	private function FM_enqueue_css($percorso_file){
-		if ($percorso_file==''){
+		if (empty($percorso_file)) {
 			return; 
 		}
 		
@@ -216,28 +220,24 @@ final class FM_ADVQ_EP {
 		$handle_name="fm-dyn-style-".$nome_file;
 		
 		//verifico se template locale o nel tema 
-		if ($dir_file==$template_plugin_dir){
-			$base_url=$template_plugin_url;
-		}
-		elseif ($dir_file==$template_theme_dir){
-			$base_url=$template_theme_url;
-		}
-		else {
-			$base_url='';
+		$base_url = '';
+		if ($dir_file === $template_plugin_dir) {
+			$base_url = $template_plugin_url;
+		} 
+		elseif ($dir_file === $template_theme_dir) {
+			$base_url = $template_theme_url;
 		}
 		
 		//verifico se ho file css o min.css ed eventualmente lo metto in coda
-		if (file_exists($dir_file.$file_min_css)){
-			if ($base_url!=''){
-				wp_enqueue_style( $handle_name, $base_url.$file_min_css );	
+		 if (!empty($base_url)) {
+			if (file_exists($dir_file . $file_min_css)) {
+				wp_register_style($handle_name, $base_url . $file_min_css);
+				wp_enqueue_style($handle_name);
+			} 
+			elseif (file_exists($dir_file . $file_css)) {
+				wp_register_style($handle_name, $base_url . $file_css);
+				wp_enqueue_style($handle_name);
 			}
-
-		}
-		elseif (file_exists($dir_file.$file_css)){
-			if ($base_url!=''){
-				wp_enqueue_style( $handle_name, $base_url.$file_css );	
-			}
-
 		}
 		
 	}
